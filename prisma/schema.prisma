@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          UserRole  @default(USER)
+  
+  // Relations
+  bookings      Booking[]
+  reviews       Review[]
+  
+  @@map("users")
+}
+
+model Destination {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  location    String
+  category    DestinationCategory
+  imageUrl    String
+  rating      Float    @default(0)
+  priceRange  PriceRange
+  bestTimeToVisit String?
+  highlights  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  reviews     Review[]
+  
+  @@map("destinations")
+}
+
+model Attraction {
+  id             String   @id @default(cuid())
+  name           String
+  description    String
+  location       String
+  category       AttractionCategory
+  imageUrl       String
+  rating         Float    @default(0)
+  price          Float
+  duration       String
+  maxVisitors    Int
+  availableSlots Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Relations
+  bookings      Booking[]
+  reviews       Review[]
+  
+  @@map("attractions")
+}
+
+model Hotel {
+  id            String   @id @default(cuid())
+  name          String
+  description  String
+  location     String
+  category     HotelCategory
+  imageUrl     String
+  rating       Float    @default(0)
+  pricePerNight Float
+  amenities    String
+  availableRooms Int     @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  bookings      Booking[]
+  reviews       Review[]
+  
+  @@map("hotels")
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  userId         String
+  type           BookingType
+  hotelId        String?
+  attractionId   String?
+  checkIn        DateTime?     // For hotel bookings
+  checkOut       DateTime?     // For hotel bookings
+  visitDate      DateTime?     // For attraction bookings
+  guests         Int?          // For hotel bookings
+  rooms          Int?          // For hotel bookings
+  numberOfPeople Int?          // For attraction bookings
+  totalPrice     Float
+  status         BookingStatus @default(PENDING)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  
+  // Relations
+  user           User          @relation(fields: [userId], references: [id])
+  hotel          Hotel?        @relation(fields: [hotelId], references: [id])
+  attraction     Attraction?   @relation(fields: [attractionId], references: [id])
+  
+  @@map("bookings")
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  userId        String
+  destinationId String?
+  hotelId       String?
+  attractionId  String?
+  rating        Int
+  comment       String?
+  createdAt     DateTime @default(now())
+  
+  // Relations
+  user          User         @relation(fields: [userId], references: [id])
+  destination   Destination? @relation(fields: [destinationId], references: [id])
+  hotel         Hotel?       @relation(fields: [hotelId], references: [id])
+  attraction    Attraction?  @relation(fields: [attractionId], references: [id])
+  
+  @@map("reviews")
+}
+
+// Enums
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum DestinationCategory {
+  HISTORIC
+  NATURAL
+  CULTURAL
+  ADVENTURE
+  BEACH
+  WILDLIFE
+}
+
+enum AttractionCategory {
+  HISTORIC
+  NATURAL
+  CULTURAL
+  ADVENTURE
+}
+
+enum HotelCategory {
+  LUXURY
+  BOUTIQUE
+  ECO_FRIENDLY
+  BUDGET
+  RESORT
+}
+
+enum PriceRange {
+  BUDGET
+  MODERATE
+  LUXURY
+  PREMIUM
+}
+
+enum BookingType {
+  HOTEL
+  ATTRACTION
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
