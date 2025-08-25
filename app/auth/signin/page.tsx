@@ -34,7 +34,12 @@ export default function SignInPage() {
         // Check if user is authenticated
         const session = await getSession()
         if (session) {
-          router.push('/')
+          // Redirect admin users to admin dashboard, regular users to home
+          if (session.user.role === 'ADMIN') {
+            router.push('/admin')
+          } else {
+            router.push('/')
+          }
           router.refresh()
         }
       }

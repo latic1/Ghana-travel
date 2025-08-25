@@ -1,277 +1,188 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { MapPin, Star, Search, Navigation, Hotel, Camera, Phone, Mail, Globe } from "lucide-react"
+import { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { MapPin, Star, Camera, Hotel, Navigation, Building2 } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+// Dynamically import the map selector component to avoid SSR issues
+const MapSelector = dynamic(() => import('@/components/MapSelector'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-96 bg-gray-200 rounded-lg flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading map...</p>
+      </div>
+    </div>
+  )
+})
 
 interface Location {
   id: string
   name: string
-  type: "attraction" | "accommodation" | "route"
-  coordinates: { x: number; y: number }
-  rating: number
   description: string
-  price?: string
-  image: string
+  location: string
   region: string
+  type: 'attraction' | 'accommodation'
+  rating: number
+  price?: string
+  coordinates: [number, number] // [latitude, longitude]
 }
-
-const locations: Location[] = [
-  {
-    id: "1",
-    name: "Cape Coast Castle",
-    type: "attraction",
-    coordinates: { x: 45, y: 65 },
-    rating: 4.8,
-    description: "UNESCO World Heritage site with profound historical significance",
-    image: "/cape-coast-castle-ghana.png",
-    region: "Central",
-  },
-  {
-    id: "2",
-    name: "Kakum National Park",
-    type: "attraction",
-    coordinates: { x: 42, y: 62 },
-    rating: 4.7,
-    description: "Famous canopy walkway and diverse wildlife",
-    image: "/placeholder-s2dgm.png",
-    region: "Central",
-  },
-  {
-    id: "3",
-    name: "Mole National Park",
-    type: "attraction",
-    coordinates: { x: 35, y: 25 },
-    rating: 4.6,
-    description: "Ghana's largest wildlife refuge with elephants",
-    image: "/mole-national-park-elephants.png",
-    region: "Northern",
-  },
-  {
-    id: "4",
-    name: "Oceanview Resort Accra",
-    type: "accommodation",
-    coordinates: { x: 52, y: 70 },
-    rating: 4.9,
-    description: "5-star beachfront luxury resort",
-    price: "$180/night",
-    image: "/luxury-beach-resort-accra.png",
-    region: "Greater Accra",
-  },
-  {
-    id: "5",
-    name: "Rainforest Eco Lodge",
-    type: "accommodation",
-    coordinates: { x: 40, y: 60 },
-    rating: 4.7,
-    description: "Sustainable accommodation in natural setting",
-    price: "$95/night",
-    image: "/eco-lodge-ghana.png",
-    region: "Central",
-  },
-  {
-    id: "6",
-    name: "Heritage Boutique Hotel",
-    type: "accommodation",
-    coordinates: { x: 38, y: 45 },
-    rating: 4.8,
-    description: "Authentic Ghanaian culture meets modern comfort",
-    price: "$120/night",
-    image: "/kumasi-boutique-hotel.png",
-    region: "Ashanti",
-  },
-]
 
 export default function MapsPage() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
-  const [filterType, setFilterType] = useState<"all" | "attraction" | "accommodation">("all")
-  const [searchQuery, setSearchQuery] = useState("")
-
-  const filteredLocations = locations.filter((location) => {
-    const matchesFilter = filterType === "all" || location.type === filterType
-    const matchesSearch =
-      location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      location.region.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesFilter && matchesSearch
-  })
-
-  const getMarkerIcon = (type: string) => {
-    switch (type) {
-      case "attraction":
-        return <Camera className="w-4 h-4" />
-      case "accommodation":
-        return <Hotel className="w-4 h-4" />
-      default:
-        return <MapPin className="w-4 h-4" />
+  const [locations] = useState<Location[]>([
+    {
+      id: '1',
+      name: 'Cape Coast Castle',
+      description: 'Historic castle with stunning ocean views and rich cultural heritage',
+      location: 'Cape Coast, Central Region',
+      region: 'Central Region',
+      type: 'attraction',
+      rating: 4.8,
+      coordinates: [5.1053, -1.2468]
+    },
+    {
+      id: '2',
+      name: 'Kakum National Park',
+      description: 'Beautiful rainforest with canopy walkway and diverse wildlife',
+      location: 'Cape Coast, Central Region',
+      region: 'Central Region',
+      type: 'attraction',
+      rating: 4.6,
+      coordinates: [5.3500, -1.3833]
+    },
+    {
+      id: '3',
+      name: 'Mole National Park',
+      description: 'Ghana\'s largest wildlife park with elephants, antelopes, and more',
+      location: 'Sawla, Savannah Region',
+      region: 'Savannah Region',
+      type: 'attraction',
+      rating: 4.7,
+      coordinates: [9.7000, -1.8167]
+    },
+    {
+      id: '4',
+      name: 'Lake Volta',
+      description: 'World\'s largest man-made lake with fishing and water activities',
+      location: 'Eastern Region',
+      region: 'Eastern Region',
+      type: 'attraction',
+      rating: 4.5,
+      coordinates: [6.5000, 0.0000]
+    },
+    {
+      id: '5',
+      name: 'Kumasi Cultural Centre',
+      description: 'Traditional Ashanti culture, crafts, and historical artifacts',
+      location: 'Kumasi, Ashanti Region',
+      region: 'Ashanti Region',
+      type: 'attraction',
+      rating: 4.4,
+      coordinates: [6.7000, -1.6167]
+    },
+    {
+      id: '6',
+      name: 'Labadi Beach',
+      description: 'Popular beach with vibrant atmosphere and local cuisine',
+      location: 'Accra, Greater Accra Region',
+      region: 'Greater Accra Region',
+      type: 'attraction',
+      rating: 4.3,
+      coordinates: [5.5600, -0.1740]
+    },
+    {
+      id: '7',
+      name: 'Kempinski Hotel Gold Coast City',
+      description: 'Luxury 5-star hotel in the heart of Accra',
+      location: 'Accra, Greater Accra Region',
+      region: 'Greater Accra Region',
+      type: 'accommodation',
+      rating: 4.8,
+      price: '$200-400/night',
+      coordinates: [5.5600, -0.1869]
+    },
+    {
+      id: '8',
+      name: 'Movenpick Ambassador Hotel',
+      description: 'Elegant hotel with ocean views and world-class amenities',
+      location: 'Accra, Greater Accra Region',
+      region: 'Greater Accra Region',
+      type: 'accommodation',
+      rating: 4.7,
+      price: '$180-350/night',
+      coordinates: [5.5500, -0.1900]
+    },
+    {
+      id: '9',
+      name: 'Elmina Beach Resort',
+      description: 'Beachfront resort with traditional Ghanaian hospitality',
+      location: 'Elmina, Central Region',
+      region: 'Central Region',
+      type: 'accommodation',
+      rating: 4.5,
+      price: '$120-250/night',
+      coordinates: [5.0833, -1.3500]
+    },
+    {
+      id: '10',
+      name: 'Kumasi Golden Tulip Hotel',
+      description: 'Modern hotel in the heart of Ashanti culture',
+      location: 'Kumasi, Ashanti Region',
+      region: 'Ashanti Region',
+      type: 'accommodation',
+      rating: 4.4,
+      price: '$100-200/night',
+      coordinates: [6.7000, -1.6167]
     }
-  }
-
-  const getMarkerColor = (type: string) => {
-    switch (type) {
-      case "attraction":
-        return "bg-blue-500 hover:bg-blue-600"
-      case "accommodation":
-        return "bg-green-500 hover:bg-green-600"
-      default:
-        return "bg-yellow-500 hover:bg-yellow-600"
-    }
-  }
+  ])
 
   return (
-    <div className="min-h-screen bg-background">
-     
-
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-foreground mb-4">Interactive Ghana Tourism Map</h2>
-          <p className="text-muted-foreground max-w-2xl">
-            Explore Ghana's attractions, accommodations, and travel routes on our interactive map. Click on markers to
-            learn more about each destination.
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Interactive Map of Ghana</h1>
+          <p className="text-xl text-gray-600 max-w-3xl">
+            Explore Ghana's amazing destinations, attractions, and accommodations on our interactive map. 
+            Click on markers to learn more about each location.
           </p>
         </div>
 
-        {/* Controls */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search locations or regions..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant={filterType === "all" ? "default" : "outline"}
-              onClick={() => setFilterType("all")}
-              size="sm"
-            >
-              All Locations
-            </Button>
-            <Button
-              variant={filterType === "attraction" ? "default" : "outline"}
-              onClick={() => setFilterType("attraction")}
-              size="sm"
-            >
-              <Camera className="w-4 h-4 mr-2" />
-              Attractions
-            </Button>
-            <Button
-              variant={filterType === "accommodation" ? "default" : "outline"}
-              onClick={() => setFilterType("accommodation")}
-              size="sm"
-            >
-              <Hotel className="w-4 h-4 mr-2" />
-              Hotels
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Map Section */}
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Map */}
+          <div className="lg:col-span-3">
             <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Navigation className="w-5 h-5 text-yellow-600" />
+                  <MapPin className="w-5 h-5 text-yellow-600" />
                   Ghana Tourism Map
                 </CardTitle>
-                <CardDescription>Click on markers to explore destinations across Ghana</CardDescription>
+                <CardDescription>
+                  Interactive map showing attractions, hotels, and points of interest across Ghana
+                </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="relative w-full h-[600px] bg-gradient-to-br from-green-100 to-blue-100 overflow-hidden">
-                  {/* Ghana Map Outline */}
-                  <svg
-                    viewBox="0 0 100 100"
-                    className="absolute inset-0 w-full h-full"
-                    style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}
-                  >
-                    {/* Simplified Ghana outline */}
-                    <path
-                      d="M20 20 L80 20 L85 30 L80 40 L85 50 L80 60 L75 70 L70 80 L60 85 L50 80 L40 85 L30 80 L25 70 L20 60 L15 50 L20 40 L15 30 Z"
-                      fill="rgba(34, 197, 94, 0.2)"
-                      stroke="rgba(34, 197, 94, 0.5)"
-                      strokeWidth="0.5"
-                    />
-
-                    {/* Regional boundaries */}
-                    <path d="M20 35 L80 35" stroke="rgba(156, 163, 175, 0.3)" strokeWidth="0.3" strokeDasharray="1,1" />
-                    <path d="M20 55 L80 55" stroke="rgba(156, 163, 175, 0.3)" strokeWidth="0.3" strokeDasharray="1,1" />
-                  </svg>
-
-                  {/* Location Markers */}
-                  {filteredLocations.map((location) => (
-                    <button
-                      key={location.id}
-                      className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full ${getMarkerColor(location.type)} text-white flex items-center justify-center shadow-lg transition-all hover:scale-110 z-10`}
-                      style={{
-                        left: `${location.coordinates.x}%`,
-                        top: `${location.coordinates.y}%`,
-                      }}
-                      onClick={() => setSelectedLocation(location)}
-                    >
-                      {getMarkerIcon(location.type)}
-                    </button>
-                  ))}
-
-                  {/* Route Lines */}
-                  <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none">
-                    {/* Golden Triangle Route */}
-                    <path
-                      d="M52 70 Q47 67 45 65 Q42 62 42 62 Q40 50 38 45"
-                      stroke="rgba(234, 179, 8, 0.6)"
-                      strokeWidth="0.8"
-                      fill="none"
-                      strokeDasharray="2,2"
-                    />
-
-                    {/* Northern Safari Route */}
-                    <path
-                      d="M35 25 Q37 35 40 45"
-                      stroke="rgba(34, 197, 94, 0.6)"
-                      strokeWidth="0.8"
-                      fill="none"
-                      strokeDasharray="2,2"
-                    />
-                  </svg>
-
-                  {/* Region Labels */}
-                  <div className="absolute top-4 left-4 text-xs font-medium text-muted-foreground bg-white/80 px-2 py-1 rounded">
-                    Northern Region
-                  </div>
-                  <div className="absolute top-1/2 left-4 text-xs font-medium text-muted-foreground bg-white/80 px-2 py-1 rounded">
-                    Central Region
-                  </div>
-                  <div className="absolute bottom-4 right-4 text-xs font-medium text-muted-foreground bg-white/80 px-2 py-1 rounded">
-                    Greater Accra
-                  </div>
-                </div>
+                <MapSelector 
+                  locations={locations}
+                  onLocationSelect={setSelectedLocation}
+                />
               </CardContent>
             </Card>
           </div>
 
-          {/* Location Details */}
+          {/* Sidebar */}
           <div className="space-y-6">
+            {/* Selected Location Details */}
             {selectedLocation ? (
               <Card>
-                <div className="h-48 overflow-hidden">
-                  <img
-                    src={selectedLocation.image || "/placeholder.svg"}
-                    alt={selectedLocation.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        {getMarkerIcon(selectedLocation.type)}
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">
                         {selectedLocation.name}
                       </CardTitle>
                       <CardDescription className="mt-2">{selectedLocation.description}</CardDescription>
@@ -291,7 +202,7 @@ export default function MapsPage() {
                   </div>
                   <div className="space-y-2">
                     <Button className="w-full bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700">
-                      {selectedLocation.type === "accommodation" ? "Book Now" : "Learn More"}
+                      {selectedLocation.type === "accommodation" ? "Book Now" : "View Details"}
                     </Button>
                     <Button variant="outline" className="w-full bg-transparent">
                       <Navigation className="w-4 h-4 mr-2" />
@@ -325,8 +236,8 @@ export default function MapsPage() {
                     <div className="flex items-center gap-3">
                       <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
                         <MapPin className="w-3 h-3 text-white" />
+                        <span className="text-sm">Travel Routes</span>
                       </div>
-                      <span className="text-sm">Travel Routes</span>
                     </div>
                   </div>
                 </CardContent>
@@ -366,8 +277,6 @@ export default function MapsPage() {
           </div>
         </div>
       </div>
-
-    
     </div>
   )
 }

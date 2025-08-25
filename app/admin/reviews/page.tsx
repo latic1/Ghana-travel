@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Star, Search, Filter, Edit, Trash2, Eye, User, Building2, MapPin, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Review {
   id: string
@@ -52,13 +53,14 @@ export default function ReviewsPage() {
           // Remove from local state
           setReviews(prev => prev.filter(review => review.id !== id))
           setFilteredReviews(prev => prev.filter(review => review.id !== id))
+          toast.success('Review deleted successfully')
         } else {
           const error = await response.json()
-          alert(`Failed to delete review: ${error.error}`)
+          toast.error(`Failed to delete review: ${error.error}`)
         }
       } catch (error) {
         console.error('Error deleting review:', error)
-        alert('Error deleting review')
+        toast.error('Error deleting review')
       } finally {
         setIsDeleting(null)
       }

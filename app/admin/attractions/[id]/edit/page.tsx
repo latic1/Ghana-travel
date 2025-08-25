@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Destination {
   id: string
@@ -62,12 +63,12 @@ export default function EditDestinationPage() {
             highlights: data.highlights ? JSON.parse(data.highlights).join(', ') : ''
           })
         } else {
-          alert('Failed to fetch destination')
+          toast.error('Failed to fetch destination')
           router.push('/admin/destinations')
         }
       } catch (error) {
         console.error('Error fetching destination:', error)
-        alert('Error fetching destination')
+        toast.error('Error fetching destination')
         router.push('/admin/destinations')
       } finally {
         setIsLoading(false)
@@ -96,14 +97,15 @@ export default function EditDestinationPage() {
       })
 
       if (response.ok) {
+        toast.success('Destination updated successfully!')
         router.push('/admin/destinations')
       } else {
         const error = await response.json()
-        alert(`Failed to update destination: ${error.error}`)
+        toast.error(`Failed to update destination: ${error.error}`)
       }
     } catch (error) {
       console.error('Error updating destination:', error)
-      alert('Error updating destination')
+      toast.error('Error updating destination')
     } finally {
       setIsSubmitting(false)
     }

@@ -5,9 +5,10 @@ import { authOptions } from '../../auth/[...nextauth]/route'
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Check if user is authenticated
     const session = await getServerSession(authOptions)
     if (!session) {
@@ -18,7 +19,7 @@ export async function GET(
     }
 
     const review = await prisma.review.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         user: {
           select: {
@@ -71,9 +72,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Check if user is authenticated and is admin
     const session = await getServerSession(authOptions)
     if (!session || session.user.role !== 'ADMIN') {
@@ -86,7 +88,7 @@ export async function PUT(
     const body = await request.json()
     
     const review = await prisma.review.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         rating: body.rating,
         comment: body.comment,
@@ -128,9 +130,10 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Check if user is authenticated and is admin
     const session = await getServerSession(authOptions)
     if (!session || session.user.role !== 'ADMIN') {
@@ -141,7 +144,7 @@ export async function DELETE(
     }
 
     await prisma.review.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Review deleted successfully' })

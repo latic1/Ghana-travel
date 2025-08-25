@@ -161,75 +161,7 @@ export default function HomePage() {
     return colors[category] || 'bg-gray-100 text-gray-800'
   }
 
-  const handleAttractionBooking = async (attractionId: string) => {
-    if (!session?.user) {
-      // Redirect to sign in if not authenticated
-      window.location.href = '/auth/signin'
-      return
-    }
 
-    try {
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: 'ATTRACTION',
-          attractionId: attractionId,
-          date: new Date().toISOString().split('T')[0], // Today's date
-          numberOfPeople: 1,
-          totalPrice: attractions.find(a => a.id === attractionId)?.price || 0
-        }),
-      })
-
-      if (response.ok) {
-        alert('Attraction booked successfully! Check your bookings page.')
-      } else {
-        const error = await response.json()
-        alert(`Failed to book attraction: ${error.error}`)
-      }
-    } catch (error) {
-      console.error('Error booking attraction:', error)
-      alert('Error booking attraction')
-    }
-  }
-
-  const handleHotelBooking = async (hotelId: string) => {
-    if (!session?.user) {
-      // Redirect to sign in if not authenticated
-      window.location.href = '/auth/signin'
-      return
-    }
-
-    try {
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: 'HOTEL',
-          hotelId: hotelId,
-          checkInDate: new Date().toISOString().split('T')[0], // Today's date
-          checkOutDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Tomorrow's date
-          numberOfGuests: 1,
-          numberOfRooms: 1,
-          totalPrice: hotels.find(h => h.id === hotelId)?.pricePerNight || 0
-        }),
-      })
-
-      if (response.ok) {
-        alert('Hotel booked successfully! Check your bookings page.')
-      } else {
-        const error = await response.json()
-        alert(`Failed to book hotel: ${error.error}`)
-      }
-    } catch (error) {
-      console.error('Error booking hotel:', error)
-      alert('Error booking hotel')
-    }
-  }
 
   if (isLoading) {
     return (
@@ -355,19 +287,15 @@ export default function HomePage() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" asChild className="flex-1">
-                            <Link href={`/attractions/${attraction.id}`}>
-                              Learn More
-                            </Link>
-                          </Button>
                           <Button 
                             size="sm" 
-                            className="flex-1 bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
-                            onClick={() => handleAttractionBooking(attraction.id)}
-                            disabled={attraction.availableSlots === 0}
+                            className="w-full bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
+                            asChild
                           >
-                            <BookOpen className="w-4 h-4 mr-2" />
-                            {attraction.availableSlots > 0 ? 'Book Now' : 'Fully Booked'}
+                            <Link href={`/attractions/${attraction.id}`}>
+                              <BookOpen className="w-4 h-4 mr-2" />
+                              View Details
+                            </Link>
                           </Button>
                         </div>
                       </CardContent>
@@ -415,19 +343,15 @@ export default function HomePage() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" asChild className="flex-1">
-                            <Link href={`/hotels/${hotel.id}`}>
-                              Learn More
-                            </Link>
-                          </Button>
                           <Button 
                             size="sm" 
-                            className="flex-1 bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
-                            onClick={() => handleHotelBooking(hotel.id)}
-                            disabled={hotel.availableRooms === 0}
+                            className="w-full bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
+                            asChild
                           >
-                            <BookOpen className="w-4 h-4 mr-2" />
-                            {hotel.availableRooms > 0 ? 'Book Now' : 'Fully Booked'}
+                            <Link href={`/hotels/${hotel.id}`}>
+                              <BookOpen className="w-4 h-4 mr-2" />
+                              View Details
+                            </Link>
                           </Button>
                         </div>
                       </CardContent>
@@ -496,19 +420,15 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" asChild className="flex-1">
-                        <Link href={`/attractions/${attraction.id}`}>
-                          Learn More
-                        </Link>
-                      </Button>
                       <Button 
                         size="sm" 
-                        className="flex-1 bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
-                        onClick={() => handleAttractionBooking(attraction.id)}
-                        disabled={attraction.availableSlots === 0}
+                        className="w-full bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
+                        asChild
                       >
-                        <BookOpen className="w-4 h-4 mr-2" />
-                        {attraction.availableSlots > 0 ? 'Book Now' : 'Fully Booked'}
+                        <Link href={`/attractions/${attraction.id}`}>
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          View Details
+                        </Link>
                       </Button>
                     </div>
                   </CardContent>
@@ -580,19 +500,15 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" asChild className="flex-1">
-                        <Link href={`/hotels/${hotel.id}`}>
-                          Learn More
-                        </Link>
-                      </Button>
                       <Button 
                         size="sm" 
-                        className="flex-1 bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
-                        onClick={() => handleHotelBooking(hotel.id)}
-                        disabled={hotel.availableRooms === 0}
+                        className="w-full bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
+                        asChild
                       >
-                        <BookOpen className="w-4 h-4 mr-2" />
-                        {hotel.availableRooms > 0 ? 'Book Now' : 'Fully Booked'}
+                        <Link href={`/hotels/${hotel.id}`}>
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          View Details
+                        </Link>
                       </Button>
                     </div>
                   </CardContent>

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 export default function NewDestinationPage() {
   const router = useRouter()
@@ -43,15 +44,16 @@ export default function NewDestinationPage() {
       })
 
       if (response.ok) {
+        toast.success('Destination created successfully!')
         router.push('/admin/destinations')
       } else {
         const error = await response.json()
-        alert(`Failed to create destination: ${error.error}`)
+        toast.error(`Failed to create destination: ${error.error}`)
       }
     } catch (error) {
       console.error('Error creating destination:', error)
-      alert('Error creating destination')
-    } finally {
+      toast.error('Error creating destination')
+      } finally {
       setIsSubmitting(false)
     }
   }

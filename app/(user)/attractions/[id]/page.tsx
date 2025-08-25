@@ -2,11 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, Star, Calendar, ArrowLeft, Building2, Phone, Mail } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { MapPin, Star, Calendar, ArrowLeft, Building2, Phone, Mail, Users, BookOpen } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Destination {
   id: string
@@ -19,6 +24,9 @@ interface Destination {
   priceRange: string
   bestTimeToVisit?: string
   highlights: string
+  price: number
+  maxVisitors: number
+  availableSlots: number
   createdAt: string
   hotels?: any[]
   reviews?: any[]
@@ -26,8 +34,13 @@ interface Destination {
 
 export default function DestinationDetailPage() {
   const params = useParams()
+  const { data: session } = useSession()
   const [destination, setDestination] = useState<Destination | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [bookingData, setBookingData] = useState({
+    visitDate: '',
+    numberOfPeople: 1
+  })
 
   useEffect(() => {
     const fetchDestination = async () => {
@@ -59,6 +72,29 @@ export default function DestinationDetailPage() {
     }
   }
 
+  const calculateTotalPrice = () => {
+    if (!destination) return 0
+    return destination.price * bookingData.numberOfPeople
+  }
+
+  const handleBooking = () => {
+    if (!session) {
+      toast.error('Please sign in to book this attraction')
+      return
+    }
+
+    if (!bookingData.visitDate) {
+      toast.error('Please select a visit date')
+      return
+    }
+
+    const totalPrice = calculateTotalPrice()
+    
+    // Redirect to checkout with booking data
+    const checkoutUrl = `/checkout?type=ATTRACTION&attractionId=${destination?.id}&visitDate=${bookingData.visitDate}&numberOfPeople=${bookingData.numberOfPeople}&totalPrice=${totalPrice}`
+    window.location.href = checkoutUrl
+  }
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -87,6 +123,8 @@ export default function DestinationDetailPage() {
       </div>
     )
   }
+
+  const totalPrice = calculateTotalPrice()
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -200,6 +238,101 @@ export default function DestinationDetailPage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Booking Card */}
+          <Card className="sticky top-6">
+            <CardHeader>
+              <CardTitle>Book Your Visit</CardTitle>
+              <CardDescription>Reserve your spot today</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold text-green-600">
+                  ${destination.price}
+                </span>
+                <span className="text-gray-600">per person</span>
+              </div>
+              
+              {totalPrice > 0 && (
+                <div className="flex items-center justify-between text-lg font-semibold border-t pt-3">
+                  <span className="text-gray-700">Total Price:</span>
+                  <span className="text-2xl font-bold text-green-600">
+                    ${totalPrice}
+                  </span>
+                </div>
+              )}
+              
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Available Slots</span>
+                  <span className="font-medium">{destination.availableSlots}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Max Visitors</span>
+                  <span className="font-medium">{destination.maxVisitors}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Rating</span>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                    <span className="font-medium">{destination.rating}</span>
+                  </div>
+                </div>
+              </div>
+
+              {session ? (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="visitDate">Visit Date</Label>
+                    <Input
+                      id="visitDate"
+                      type="date"
+                      value={bookingData.visitDate}
+                      onChange={(e) => setBookingData({ ...bookingData, visitDate: e.target.value })}
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="numberOfPeople">Number of People</Label>
+                    <Select value={bookingData.numberOfPeople.toString()} onValueChange={(value) => setBookingData({ ...bookingData, numberOfPeople: parseInt(value) })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[...Array(destination.maxVisitors)].map((_, i) => (
+                          <SelectItem key={i + 1} value={(i + 1).toString()}>
+                            {i + 1}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Button 
+                    className="w-full bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700"
+                    onClick={handleBooking}
+                    disabled={!bookingData.visitDate}
+                  >
+                    <BookOpen className="w-4 h-4 mr-2" />
+                    Book Now
+                  </Button>
+                </div>
+              ) : (
+                <Button className="w-full" asChild>
+                  <Link href="/auth/signin">
+                    Sign In to Book
+                  </Link>
+                </Button>
+              )}
+              
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  Free cancellation up to 24 hours before visit
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Quick Info */}
           <Card>
             <CardHeader>

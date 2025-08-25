@@ -5,7 +5,6 @@ export async function GET() {
   try {
     const hotels = await prisma.hotel.findMany({
       include: {
-        destination: true,
         reviews: true,
       },
       orderBy: {
@@ -38,7 +37,6 @@ export async function POST(request: Request) {
         pricePerNight: body.pricePerNight,
         amenities: body.amenities,
         availableRooms: body.availableRooms || 0,
-        destinationId: body.destinationId,
       },
     })
 

@@ -40,7 +40,7 @@ export default function AdminLayout({
 
   const menuItems = [
     { href: '/admin', icon: Home, label: 'Dashboard' },
-    { href: '/admin/destinations', icon: MapPin, label: 'Destinations' },
+    { href: '/admin/attractions', icon: MapPin, label: 'Attractions' },
     { href: '/admin/hotels', icon: Building2, label: 'Hotels' },
     { href: '/admin/users', icon: Users, label: 'Users' },
     { href: '/admin/bookings', icon: Calendar, label: 'Bookings' },

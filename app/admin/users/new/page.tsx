@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Save, Loader2, User, Shield, UserCheck } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 export default function NewUserPage() {
   const router = useRouter()
@@ -34,14 +35,15 @@ export default function NewUserPage() {
       })
 
       if (response.ok) {
+        toast.success('User created successfully!')
         router.push('/admin/users')
       } else {
         const error = await response.json()
-        alert(`Failed to create user: ${error.error}`)
+        toast.error(`Failed to create user: ${error.error}`)
       }
     } catch (error) {
       console.error('Error creating user:', error)
-      alert('Error creating user')
+      toast.error('Error creating user')
     } finally {
       setIsSubmitting(false)
     }

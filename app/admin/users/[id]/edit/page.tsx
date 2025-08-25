@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Save, Loader2, User, Shield, UserCheck } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface User {
   id: string
@@ -46,12 +47,12 @@ export default function EditUserPage() {
             role: data.role
           })
         } else {
-          alert('Failed to fetch user')
+          toast.error('Failed to fetch user')
           router.push('/admin/users')
         }
       } catch (error) {
         console.error('Error fetching user:', error)
-        alert('Error fetching user')
+        toast.error('Error fetching user')
         router.push('/admin/users')
       } finally {
         setIsLoading(false)
@@ -77,14 +78,15 @@ export default function EditUserPage() {
       })
 
       if (response.ok) {
+        toast.success('User updated successfully!')
         router.push('/admin/users')
       } else {
         const error = await response.json()
-        alert(`Failed to update user: ${error.error}`)
+        toast.error(`Failed to update user: ${error.error}`)
       }
     } catch (error) {
       console.error('Error updating user:', error)
-      alert('Error updating user')
+      toast.error('Error updating user')
     } finally {
       setIsSubmitting(false)
     }

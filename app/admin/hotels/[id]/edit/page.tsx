@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Hotel {
   id: string
@@ -72,7 +73,7 @@ export default function EditHotelPage() {
             destinationId: hotelData.destinationId
           })
         } else {
-          alert('Failed to fetch hotel')
+          toast.error('Failed to fetch hotel')
           router.push('/admin/hotels')
         }
 
@@ -84,7 +85,7 @@ export default function EditHotelPage() {
         }
       } catch (error) {
         console.error('Error fetching data:', error)
-        alert('Error fetching data')
+        toast.error('Error fetching data')
         router.push('/admin/hotels')
       } finally {
         setIsLoading(false)
@@ -113,14 +114,15 @@ export default function EditHotelPage() {
       })
 
       if (response.ok) {
+        toast.success('Hotel updated successfully!')
         router.push('/admin/hotels')
       } else {
         const error = await response.json()
-        alert(`Failed to update hotel: ${error.error}`)
+        toast.error(`Failed to update hotel: ${error.error}`)
       }
     } catch (error) {
       console.error('Error updating hotel:', error)
-      alert('Error updating hotel')
+      toast.error('Error updating hotel')
     } finally {
       setIsSubmitting(false)
     }

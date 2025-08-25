@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Star, Calendar, ArrowLeft, Building2, Edit, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Destination {
   id: string
@@ -38,11 +39,11 @@ export default function ViewDestinationPage() {
           const data = await response.json()
           setDestination(data)
         } else {
-          alert('Failed to fetch destination')
+          toast.error('Failed to fetch destination')
         }
       } catch (error) {
         console.error('Error fetching destination:', error)
-        alert('Error fetching destination')
+        toast.error('Error fetching destination')
       } finally {
         setIsLoading(false)
       }
@@ -62,14 +63,15 @@ export default function ViewDestinationPage() {
         })
         
         if (response.ok) {
+          toast.success('Destination deleted successfully')
           // Redirect back to destinations list
           window.location.href = '/admin/destinations'
         } else {
-          alert('Failed to delete destination')
+          toast.error('Failed to delete destination')
         }
       } catch (error) {
         console.error('Error deleting destination:', error)
-        alert('Error deleting destination')
+        toast.error('Error deleting destination')
       } finally {
         setIsDeleting(false)
       }

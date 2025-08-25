@@ -54,7 +54,7 @@ model Attraction {
   description    String
   location       String
   category       AttractionCategory
-  imageUrl       String
+  images         String   // JSON array of image URLs
   rating         Float    @default(0)
   price          Float
   duration       String
@@ -76,7 +76,7 @@ model Hotel {
   description  String
   location     String
   category     HotelCategory
-  imageUrl     String
+  images       String   // JSON array of image URLs
   rating       Float    @default(0)
   pricePerNight Float
   amenities    String
@@ -112,6 +112,7 @@ model Booking {
   user           User          @relation(fields: [userId], references: [id])
   hotel          Hotel?        @relation(fields: [hotelId], references: [id])
   attraction     Attraction?   @relation(fields: [attractionId], references: [id])
+  payments       Payment[]
   
   @@map("bookings")
 }
@@ -133,6 +134,25 @@ model Review {
   attraction    Attraction?  @relation(fields: [attractionId], references: [id])
   
   @@map("reviews")
+}
+
+model Payment {
+  id                  String   @id @default(cuid())
+  bookingId           String
+  amount              Float
+  currency            String   @default("NGN")
+  paymentMethod       String
+  transactionReference String  @unique
+  status              PaymentStatus @default(PENDING)
+  paidAt              DateTime?
+  metadata            String?  // JSON string for additional data
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  // Relations
+  booking             Booking  @relation(fields: [bookingId], references: [id])
+  
+  @@map("payments")
 }
 
 // Enums
@@ -183,4 +203,11 @@ enum BookingStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
 }

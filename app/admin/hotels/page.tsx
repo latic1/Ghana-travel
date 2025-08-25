@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Building2, Plus, Search, Filter, Edit, Trash2, Eye, MapPin } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Hotel {
   id: string
@@ -46,12 +47,13 @@ export default function HotelsPage() {
           // Remove from local state
           setHotels(prev => prev.filter(hotel => hotel.id !== id))
           setFilteredHotels(prev => prev.filter(hotel => hotel.id !== id))
+          toast.success('Hotel deleted successfully')
         } else {
-          alert('Failed to delete hotel')
+          toast.error('Failed to delete hotel')
         }
       } catch (error) {
         console.error('Error deleting hotel:', error)
-        alert('Error deleting hotel')
+        toast.error('Error deleting hotel')
       } finally {
         setIsDeleting(null)
       }

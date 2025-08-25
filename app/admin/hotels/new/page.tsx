@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Destination {
   id: string
@@ -66,14 +67,15 @@ export default function NewHotelPage() {
       })
 
       if (response.ok) {
+        toast.success('Hotel created successfully!')
         router.push('/admin/hotels')
       } else {
         const error = await response.json()
-        alert(`Failed to create hotel: ${error.error}`)
+        toast.error(`Failed to create hotel: ${error.error}`)
       }
     } catch (error) {
       console.error('Error creating hotel:', error)
-      alert('Error creating hotel')
+      toast.error('Error creating hotel')
     } finally {
       setIsSubmitting(false)
     }

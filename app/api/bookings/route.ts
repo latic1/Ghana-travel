@@ -67,17 +67,43 @@ export async function POST(request: Request) {
     const body = await request.json()
     
     if (body.type === 'HOTEL') {
+      // Validate required fields
+      if (!body.hotelId || !body.checkInDate || !body.checkOutDate || !body.numberOfGuests || !body.numberOfRooms || !body.totalPrice) {
+        return NextResponse.json(
+          { error: 'Missing required fields for hotel booking' },
+          { status: 400 }
+        )
+      }
+
+      // Validate and parse dates
+      const checkIn = new Date(body.checkInDate)
+      const checkOut = new Date(body.checkOutDate)
+      
+      if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
+        return NextResponse.json(
+          { error: 'Invalid date format for check-in or check-out' },
+          { status: 400 }
+        )
+      }
+
+      if (checkIn >= checkOut) {
+        return NextResponse.json(
+          { error: 'Check-out date must be after check-in date' },
+          { status: 400 }
+        )
+      }
+
       // Create hotel booking
       const booking = await prisma.booking.create({
         data: {
           userId: session.user.id,
           type: 'HOTEL',
           hotelId: body.hotelId,
-          checkIn: new Date(body.checkInDate),
-          checkOut: new Date(body.checkOutDate),
-          guests: body.numberOfGuests,
-          rooms: body.numberOfRooms,
-          totalPrice: body.totalPrice,
+          checkIn: checkIn,
+          checkOut: checkOut,
+          guests: parseInt(body.numberOfGuests),
+          rooms: parseInt(body.numberOfRooms),
+          totalPrice: parseFloat(body.totalPrice),
           status: 'PENDING',
         },
         include: {
@@ -100,15 +126,33 @@ export async function POST(request: Request) {
 
       return NextResponse.json(booking, { status: 201 })
     } else if (body.type === 'ATTRACTION') {
+      // Validate required fields
+      if (!body.attractionId || !body.date || !body.numberOfPeople || !body.totalPrice) {
+        return NextResponse.json(
+          { error: 'Missing required fields for attraction booking' },
+          { status: 400 }
+        )
+      }
+
+      // Validate and parse date
+      const visitDate = new Date(body.date)
+      
+      if (isNaN(visitDate.getTime())) {
+        return NextResponse.json(
+          { error: 'Invalid date format for visit date' },
+          { status: 400 }
+        )
+      }
+
       // Create attraction booking
       const booking = await prisma.booking.create({
         data: {
           userId: session.user.id,
           type: 'ATTRACTION',
           attractionId: body.attractionId,
-          visitDate: new Date(body.date),
-          numberOfPeople: body.numberOfPeople,
-          totalPrice: body.totalPrice,
+          visitDate: visitDate,
+          numberOfPeople: parseInt(body.numberOfPeople),
+          totalPrice: parseFloat(body.totalPrice),
           status: 'PENDING',
         },
         include: {

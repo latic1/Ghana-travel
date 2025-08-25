@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Star, Building2, Edit, Trash2, Bed, DollarSign, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Hotel {
   id: string
@@ -41,11 +42,11 @@ export default function ViewHotelPage() {
           const data = await response.json()
           setHotel(data)
         } else {
-          alert('Failed to fetch hotel')
+          toast.error('Failed to fetch hotel')
         }
       } catch (error) {
         console.error('Error fetching hotel:', error)
-        alert('Error fetching hotel')
+        toast.error('Error fetching hotel')
       } finally {
         setIsLoading(false)
       }
@@ -65,14 +66,15 @@ export default function ViewHotelPage() {
         })
         
         if (response.ok) {
+          toast.success('Hotel deleted successfully')
           // Redirect back to hotels list
           window.location.href = '/admin/hotels'
         } else {
-          alert('Failed to delete hotel')
+          toast.error('Failed to delete hotel')
         }
       } catch (error) {
         console.error('Error deleting hotel:', error)
-        alert('Error deleting hotel')
+        toast.error('Error deleting hotel')
       } finally {
         setIsDeleting(false)
       }

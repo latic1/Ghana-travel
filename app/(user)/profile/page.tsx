@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { User, Mail, Shield, UserCheck, Calendar, Save, Loader2, Edit, Eye, EyeOff, MapPin, Building2 } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface UserProfile {
   id: string
@@ -63,7 +64,7 @@ export default function ProfilePage() {
     e.preventDefault()
     
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match')
+      toast.error('Passwords do not match')
       return
     }
 
@@ -93,14 +94,14 @@ export default function ProfilePage() {
         
         setIsEditing(false)
         setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }))
-        alert('Profile updated successfully!')
+        toast.success('Profile updated successfully!')
       } else {
         const error = await response.json()
-        alert(`Failed to update profile: ${error.error}`)
+        toast.error(`Failed to update profile: ${error.error}`)
       }
     } catch (error) {
       console.error('Error updating profile:', error)
-      alert('Error updating profile')
+      toast.error('Error updating profile')
     } finally {
       setIsSubmitting(false)
     }

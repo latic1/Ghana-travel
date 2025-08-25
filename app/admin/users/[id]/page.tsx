@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { User, Edit, Trash2, ArrowLeft, Shield, UserCheck, Mail, Calendar, Clock } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface User {
   id: string
@@ -31,11 +32,11 @@ export default function ViewUserPage() {
           const data = await response.json()
           setUser(data)
         } else {
-          alert('Failed to fetch user')
+          toast.error('Failed to fetch user')
         }
       } catch (error) {
         console.error('Error fetching user:', error)
-        alert('Error fetching user')
+        toast.error('Error fetching user')
       } finally {
         setIsLoading(false)
       }
@@ -59,11 +60,11 @@ export default function ViewUserPage() {
           window.location.href = '/admin/users'
         } else {
           const error = await response.json()
-          alert(`Failed to delete user: ${error.error}`)
+          toast.error(`Failed to delete user: ${error.error}`)
         }
       } catch (error) {
         console.error('Error deleting user:', error)
-        alert('Error deleting user')
+        toast.error('Error deleting user')
       } finally {
         setIsDeleting(false)
       }

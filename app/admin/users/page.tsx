@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { User, Plus, Search, Filter, Edit, Trash2, Eye, Shield, UserCheck } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface User {
   id: string
@@ -38,13 +39,14 @@ export default function UsersPage() {
           // Remove from local state
           setUsers(prev => prev.filter(user => user.id !== id))
           setFilteredUsers(prev => prev.filter(user => user.id !== id))
+          toast.success('User deleted successfully')
         } else {
           const error = await response.json()
-          alert(`Failed to delete user: ${error.error}`)
+          toast.error(`Failed to delete user: ${error.error}`)
         }
       } catch (error) {
         console.error('Error deleting user:', error)
-        alert('Error deleting user')
+        toast.error('Error deleting user')
       } finally {
         setIsDeleting(null)
       }
