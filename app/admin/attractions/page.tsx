@@ -37,7 +37,7 @@ export default function DestinationsPage() {
     if (confirm('Are you sure you want to delete this destination? This action cannot be undone.')) {
       setIsDeleting(id)
       try {
-        const response = await fetch(`/api/destinations/${id}`, {
+        const response = await fetch(`/api/attracions/${id}`, {
           method: 'DELETE',
         })
         
