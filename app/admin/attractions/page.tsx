@@ -37,7 +37,7 @@ export default function DestinationsPage() {
     if (confirm('Are you sure you want to delete this destination? This action cannot be undone.')) {
       setIsDeleting(id)
       try {
-        const response = await fetch(`/api/attracions/${id}`, {
+        const response = await fetch(`/api/attractions/${id}`, {
           method: 'DELETE',
         })
         
@@ -61,7 +61,7 @@ export default function DestinationsPage() {
   useEffect(() => {
     const fetchDestinations = async () => {
       try {
-        const response = await fetch('/api/destinations')
+        const response = await fetch('/api/attractions')
         if (response.ok) {
           const data = await response.json()
           setDestinations(data)
@@ -138,7 +138,7 @@ export default function DestinationsPage() {
           <p className="text-gray-600">Manage tourist destinations and attractions</p>
         </div>
         <Button asChild>
-          <Link href="/admin/destinations/new">
+          <Link href="/admin/attractions/new">
             <Plus className="w-4 h-4 mr-2" />
             Add Destination
           </Link>
@@ -255,12 +255,12 @@ export default function DestinationsPage() {
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <Button size="sm" variant="outline" asChild>
-                          <Link href={`/admin/destinations/${destination.id}`}>
+                          <Link href={`/admin/attractions/${destination.id}`}>
                             <Eye className="w-4 h-4" />
                           </Link>
                         </Button>
                         <Button size="sm" variant="outline" asChild>
-                          <Link href={`/admin/destinations/${destination.id}/edit`}>
+                          <Link href={`/admin/attractions/${destination.id}/edit`}>
                             <Edit className="w-4 h-4" />
                           </Link>
                         </Button>

@@ -45,7 +45,7 @@ export default function NewDestinationPage() {
 
       if (response.ok) {
         toast.success('Destination created successfully!')
-        router.push('/admin/destinations')
+        router.push('/admin/attractions')
       } else {
         const error = await response.json()
         toast.error(`Failed to create destination: ${error.error}`)
@@ -67,7 +67,7 @@ export default function NewDestinationPage() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="outline" size="sm" asChild>
-          <Link href="/admin/destinations">
+          <Link href="/admin/attractions">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Destinations
           </Link>
@@ -224,7 +224,7 @@ export default function NewDestinationPage() {
                 )}
               </Button>
               <Button type="button" variant="outline" asChild>
-                <Link href="/admin/destinations">Cancel</Link>
+                <Link href="/admin/attractions">Cancel</Link>
               </Button>
             </div>
           </form>

@@ -75,7 +75,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button asChild className="w-full justify-start">
-              <Link href="/admin/attracions/new">
+              <Link href="/admin/attractions/new">
                 <MapPin className="w-4 h-4 mr-2" />
                 Add New Destination
               </Link>
