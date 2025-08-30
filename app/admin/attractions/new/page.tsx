@@ -32,7 +32,7 @@ export default function NewDestinationPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/destinations', {
+      const response = await fetch('/api/attractions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,15 +44,15 @@ export default function NewDestinationPage() {
       })
 
       if (response.ok) {
-        toast.success('Destination created successfully!')
+        toast.success('Attraction created successfully!')
         router.push('/admin/attractions')
       } else {
         const error = await response.json()
-        toast.error(`Failed to create destination: ${error.error}`)
+        toast.error(`Failed to create attraction: ${error.error}`)
       }
     } catch (error) {
-      console.error('Error creating destination:', error)
-      toast.error('Error creating destination')
+      console.error('Error creating attraction:', error)
+      toast.error('Error creating attraction')
       } finally {
       setIsSubmitting(false)
     }
@@ -69,20 +69,20 @@ export default function NewDestinationPage() {
         <Button variant="outline" size="sm" asChild>
           <Link href="/admin/attractions">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Destinations
+            Back to Attraction
           </Link>
         </Button>
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Add New Destination</h2>
-          <p className="text-gray-600">Create a new tourist destination</p>
+          <h2 className="text-3xl font-bold text-gray-900">Add New Attraction</h2>
+          <p className="text-gray-600">Create a new tourist attraction</p>
         </div>
       </div>
 
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Destination Information</CardTitle>
-          <CardDescription>Fill in the details for the new destination</CardDescription>
+          <CardTitle>Attraction Information</CardTitle>
+          <CardDescription>Fill in the details for the new attraction</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -167,7 +167,7 @@ export default function NewDestinationPage() {
                   id="imageUrl"
                   value={formData.imageUrl}
                   onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-                  placeholder="e.g., /images/destination.jpg"
+                  placeholder="e.g., /images/attraction.jpg"
                 />
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function NewDestinationPage() {
                 id="description"
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Describe the destination..."
+                placeholder="Describe the attraction..."
                 rows={4}
                 required
               />
@@ -219,7 +219,7 @@ export default function NewDestinationPage() {
                 ) : (
                   <>
                     <Save className="w-4 h-4 mr-2" />
-                    Create Destination
+                    Create Attraction
                   </>
                 )}
               </Button>
