@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, Star, Camera, Hotel, Navigation, Building2 } from 'lucide-react'
+import { MapPin, Star, Camera, Hotel, Navigation } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
 // Dynamically import the map selector component to avoid SSR issues
@@ -147,7 +147,7 @@ export default function MapsPage() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Interactive Map of Ghana</h1>
           <p className="text-xl text-gray-600 max-w-3xl">
-            Explore Ghana's amazing destinations, attractions, and accommodations on our interactive map. 
+            Explore Ghana&apos;s amazing destinations, attractions, and accommodations on our interactive map. 
             Click on markers to learn more about each location.
           </p>
         </div>

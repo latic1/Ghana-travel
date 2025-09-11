@@ -22,7 +22,7 @@ interface MapComponentProps {
 }
 
 // Fix for default markers in Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl
+delete (L.Icon.Default.prototype as unknown)._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -45,28 +45,6 @@ export default function MapComponent({ locations, onLocationSelect }: MapCompone
       maxZoom: 18,
     }).addTo(map)
 
-    // Add Ghana boundary (simplified)
-    const ghanaBoundary = L.polygon([
-      [11.174, -3.255],
-      [11.174, 1.189],
-      [6.252, 1.189],
-      [4.884, 0.374],
-      [4.365, 0.461],
-      [4.008, 0.612],
-      [3.572, 0.712],
-      [3.328, 0.942],
-      [3.128, 1.069],
-      [2.691, 1.069],
-      [2.691, -2.885],
-      [5.160, -2.885],
-      [6.252, -3.255],
-      [11.174, -3.255]
-    ], {
-      color: '#22c55e',
-      weight: 2,
-      fillColor: '#22c55e',
-      fillOpacity: 0.1
-    }).addTo(map)
 
     // Create custom icons for different location types
     const attractionIcon = L.divIcon({

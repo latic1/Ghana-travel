@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
-import { User, Mail, Shield, UserCheck, Calendar, Save, Loader2, Edit, Eye, EyeOff, MapPin, Building2 } from 'lucide-react'
+import { User, Shield, UserCheck, Calendar, Save, Loader2, Eye, EyeOff, MapPin, Building2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 

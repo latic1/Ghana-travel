@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 model User {
@@ -48,12 +48,26 @@ model Destination {
   @@map("destinations")
 }
 
+model AttractionCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  color       String?  // Hex color for UI display
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  attractions Attraction[]
+  
+  @@map("attraction_categories")
+}
+
 model Attraction {
   id             String   @id @default(cuid())
   name           String
   description    String
   location       String
-  category       AttractionCategory
+  categoryId     String
   images         String   // JSON array of image URLs
   rating         Float    @default(0)
   price          Float
@@ -64,6 +78,7 @@ model Attraction {
   updatedAt      DateTime @updatedAt
   
   // Relations
+  category       AttractionCategory @relation(fields: [categoryId], references: [id])
   bookings      Booking[]
   reviews       Review[]
   
@@ -171,12 +186,6 @@ enum DestinationCategory {
   WILDLIFE
 }
 
-enum AttractionCategory {
-  HISTORIC
-  NATURAL
-  CULTURAL
-  ADVENTURE
-}
 
 enum HotelCategory {
   LUXURY

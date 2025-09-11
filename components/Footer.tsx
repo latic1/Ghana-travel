@@ -91,7 +91,7 @@ export default function Footer() {
 
         <div className="border-t border-muted-foreground/20 mt-8 pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2024 Ghana Tourism System. All rights reserved. | Promoting Ghana's rich heritage and natural beauty.
+            © 2024 Ghana Tourism System. All rights reserved. | Promoting Ghana&apos;s rich heritage and natural beauty.
           </p>
         </div>
       </div>

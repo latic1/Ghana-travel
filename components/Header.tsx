@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from "@/components/ui/button"
-import { MapPin, User, LogOut, Settings, BookOpen, MessageSquare } from "lucide-react"
+import { User, LogOut, Settings, BookOpen, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import {
   DropdownMenu,

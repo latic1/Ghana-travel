@@ -96,7 +96,7 @@ export default function ViewUserPage() {
       case 'ADMIN':
         return 'Full system access and user management capabilities'
       case 'MODERATOR':
-        'Content moderation and limited administrative access'
+        return 'Content moderation and limited administrative access'
       case 'USER':
         return 'Standard user access to the platform'
       default:

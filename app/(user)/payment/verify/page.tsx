@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { CheckCircle, XCircle, Loader2, CreditCard } from 'lucide-react'
+import { CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -14,7 +14,15 @@ export default function PaymentVerificationPage() {
   const router = useRouter()
   const { data: session } = useSession()
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'failed'>('loading')
-  const [verificationData, setVerificationData] = useState<any>(null)
+  const [verificationData, setVerificationData] = useState<{
+    reference: string
+    amount: number
+    status: string
+    customer: {
+      email: string
+      name: string
+    }
+  } | null>(null)
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
@@ -104,7 +112,7 @@ export default function PaymentVerificationPage() {
               </div>
               <CardTitle className="text-2xl text-red-600">Payment Verification Failed</CardTitle>
               <CardDescription>
-                We couldn't verify your payment. Please contact support if you believe this is an error.
+                We couldn&apos;t verify your payment. Please contact support if you believe this is an error.
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-4">
@@ -188,9 +196,9 @@ export default function PaymentVerificationPage() {
 
             {/* Next Steps */}
             <div className="bg-yellow-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-yellow-800 mb-2">What's Next?</h3>
+              <h3 className="font-semibold text-yellow-800 mb-2">What&apos;s Next?</h3>
               <ul className="text-sm text-yellow-700 space-y-1">
-                <li>• You'll receive a confirmation email shortly</li>
+                <li>• You&apos;ll receive a confirmation email shortly</li>
                 <li>• Your booking details are available in your profile</li>
                 <li>• Contact us if you need to make any changes</li>
               </ul>

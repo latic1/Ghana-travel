@@ -67,7 +67,12 @@ export async function PUT(
     const body = await request.json()
     
     // Prepare update data
-    const updateData: any = {
+    const updateData: {
+      name: string
+      email: string
+      role: string
+      password?: string
+    } = {
       name: body.name,
       email: body.email,
       role: body.role,

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MapPin, Globe, Layers } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
@@ -108,7 +108,7 @@ export default function MapSelector({ locations, onLocationSelect, googleMapsApi
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-xs text-gray-600 mb-2">
-              Premium mapping with Google's extensive data and features
+              Premium mapping with Google&apos;s extensive data and features
             </p>
             <div className="text-xs text-gray-500 space-y-1">
               <div>✓ High-quality satellite imagery</div>

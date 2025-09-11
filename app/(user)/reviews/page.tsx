@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Star, User, Building2, MapPin, MessageSquare, Calendar, MessageCircle, Edit } from 'lucide-react'
+import { Star, Building2, MapPin, MessageSquare, MessageCircle, Edit } from 'lucide-react'
 import Link from 'next/link'
 
 interface UserReview {
@@ -238,7 +238,7 @@ export default function UserReviewsPage() {
                             <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                             <div>
                               <p className="text-sm text-gray-700 mb-2">Your Review:</p>
-                              <p className="text-gray-900 italic">"{review.comment}"</p>
+                              <p className="text-gray-900 italic">&ldquo;{review.comment}&rdquo;</p>
                             </div>
                           </div>
                         </div>

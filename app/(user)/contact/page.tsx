@@ -55,7 +55,7 @@ export default function ContactPage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">Get in Touch</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Have questions about Ghana tourism? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Have questions about Ghana tourism? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function ContactPage() {
                   Send us a Message
                 </CardTitle>
                 <CardDescription>
-                  Fill out the form below and we'll get back to you within 24 hours.
+                  Fill out the form below and we&apos;ll get back to you within 24 hours.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -77,7 +77,7 @@ export default function ContactPage() {
                   <div className="text-center py-8">
                     <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-green-800 mb-2">Message Sent Successfully!</h3>
-                    <p className="text-green-600">Thank you for contacting us. We'll get back to you soon.</p>
+                    <p className="text-green-600">Thank you for contacting us. We&apos;ll get back to you soon.</p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -209,7 +209,7 @@ export default function ContactPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Business Hours</CardTitle>
-                <CardDescription>When we're available to help</CardDescription>
+                <CardDescription>When we&apos;re available to help</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -259,7 +259,7 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">What's the best time to visit Ghana?</CardTitle>
+                <CardTitle className="text-lg">What&apos;s the best time to visit Ghana?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
@@ -318,7 +318,7 @@ export default function ContactPage() {
                 <div className="text-center">
                   <MapPin className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground">Interactive Map Coming Soon</p>
-                  <p className="text-sm text-muted-foreground">We're working on adding an interactive map here</p>
+                  <p className="text-sm text-muted-foreground">We&apos;re working on adding an interactive map here</p>
                 </div>
               </div>
             </CardContent>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MapPin, Star, Search, Filter, Calendar, Eye } from 'lucide-react'
+import { MapPin, Star, Search, Eye } from 'lucide-react'
 import Link from 'next/link'
 
 interface Destination {
@@ -14,12 +14,20 @@ interface Destination {
   name: string
   description: string
   location: string
-  category: string
-  imageUrl: string
+  category: {
+    id: string
+    name: string
+    description?: string
+    color?: string
+    createdAt: string
+    updatedAt: string
+  }
+  images: string
   rating: number
-  priceRange: string
-  bestTimeToVisit?: string
-  highlights: string
+  price: number
+  duration: string
+  maxVisitors: number
+  availableSlots: number
   createdAt: string
 }
 
@@ -66,18 +74,31 @@ export default function DestinationsPage() {
 
     // Apply category filter
     if (categoryFilter !== 'all') {
-      filtered = filtered.filter(dest => dest.category === categoryFilter)
+      filtered = filtered.filter(dest => dest.category?.name === categoryFilter)
     }
 
     // Apply price filter
     if (priceFilter !== 'all') {
-      filtered = filtered.filter(dest => dest.priceRange === priceFilter)
+      switch (priceFilter) {
+        case 'BUDGET':
+          filtered = filtered.filter(dest => dest.price <= 50)
+          break
+        case 'MODERATE':
+          filtered = filtered.filter(dest => dest.price > 50 && dest.price <= 150)
+          break
+        case 'LUXURY':
+          filtered = filtered.filter(dest => dest.price > 150)
+          break
+        case 'PREMIUM':
+          filtered = filtered.filter(dest => dest.price > 300)
+          break
+      }
     }
 
     setFilteredDestinations(filtered)
   }, [destinations, searchTerm, categoryFilter, priceFilter])
 
-  const getCategoryColor = (category: string) => {
+  const getCategoryColor = (category: { name?: string }) => {
     const colors: { [key: string]: string } = {
       HISTORIC: 'bg-blue-100 text-blue-800',
       NATURAL: 'bg-green-100 text-green-800',
@@ -86,26 +107,23 @@ export default function DestinationsPage() {
       BEACH: 'bg-cyan-100 text-cyan-800',
       WILDLIFE: 'bg-brown-100 text-brown-800'
     }
-    return colors[category] || 'bg-gray-100 text-gray-800'
+    return colors[category?.name] || 'bg-gray-100 text-gray-800'
   }
 
-  const getPriceColor = (price: string) => {
-    const colors: { [key: string]: string } = {
-      BUDGET: 'bg-green-100 text-green-800',
-      MODERATE: 'bg-yellow-100 text-yellow-800',
-      LUXURY: 'bg-purple-100 text-purple-800',
-      PREMIUM: 'bg-red-100 text-red-800'
-    }
-    return colors[price] || 'bg-gray-100 text-gray-800'
+  const getPriceColor = (price: number) => {
+    if (price <= 50) return 'bg-green-100 text-green-800'
+    if (price <= 150) return 'bg-yellow-100 text-yellow-800'
+    if (price <= 300) return 'bg-purple-100 text-purple-800'
+    return 'bg-red-100 text-red-800'
   }
 
-  const parseHighlights = (highlights: string) => {
-    try {
-      return JSON.parse(highlights)
-    } catch {
-      return []
-    }
+  const getPriceRange = (price: number) => {
+    if (price <= 50) return 'BUDGET'
+    if (price <= 150) return 'MODERATE'
+    if (price <= 300) return 'LUXURY'
+    return 'PREMIUM'
   }
+
 
   if (isLoading) {
     return (
@@ -125,7 +143,7 @@ export default function DestinationsPage() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Discover Ghana's Amazing Destinations
+          Discover Ghana&apos;s Amazing Destinations
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           From historic castles to pristine beaches, explore the diverse attractions that make Ghana a unique travel destination.
@@ -188,12 +206,14 @@ export default function DestinationsPage() {
         {filteredDestinations.map((destination) => (
           <Card key={destination.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="h-48 bg-gray-200 relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <MapPin className="w-16 h-16 text-gray-400" />
-              </div>
+              <img
+                src={destination.images || "/placeholder-s2dgm.png"}
+                alt={destination.name}
+                className="w-full h-full object-cover"
+              />
               <div className="absolute top-3 right-3">
-                <Badge className={getPriceColor(destination.priceRange)}>
-                  {destination.priceRange}
+                <Badge className={getPriceColor(destination.price)}>
+                  {getPriceRange(destination.price)}
                 </Badge>
               </div>
             </div>
@@ -210,7 +230,7 @@ export default function DestinationsPage() {
                     <Star className="w-4 h-4 text-yellow-500 fill-current" />
                     <span className="font-medium">{destination.rating}</span>
                     <Badge className={getCategoryColor(destination.category)}>
-                      {destination.category}
+                      {destination.category?.name || 'No category'}
                     </Badge>
                   </div>
                 </div>
@@ -222,21 +242,18 @@ export default function DestinationsPage() {
                 {destination.description}
               </CardDescription>
               
-              {destination.bestTimeToVisit && (
-                <div className="flex items-center gap-2 mb-3 text-sm text-gray-600">
-                  <Calendar className="w-4 h-4" />
-                  <span>Best time: {destination.bestTimeToVisit}</span>
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Price:</span>
+                  <span className="font-medium text-green-600">₦{destination.price?.toLocaleString() || '0'}</span>
                 </div>
-              )}
-              
-              <div className="mb-4">
-                <h4 className="font-medium text-sm mb-2">Highlights:</h4>
-                <div className="flex flex-wrap gap-1">
-                  {parseHighlights(destination.highlights).map((highlight: string, index: number) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {highlight}
-                    </Badge>
-                  ))}
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Duration:</span>
+                  <span className="font-medium">{destination.duration || 'Not specified'}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Available Slots:</span>
+                  <span className="font-medium">{destination.availableSlots || 'Not specified'}</span>
                 </div>
               </div>
               

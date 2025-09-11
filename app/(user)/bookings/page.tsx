@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, User, Building2, MapPin, DollarSign, Clock, AlertCircle } from 'lucide-react'
@@ -21,7 +21,7 @@ interface UserBooking {
     id: string
     name: string
     location: string
-    imageUrl: string
+    images: string
     destination: {
       id: string
       name: string
@@ -185,8 +185,12 @@ export default function UserBookingsPage() {
                   <div className="space-y-4">
                     {/* Hotel Info */}
                     <div className="flex items-start gap-4">
-                      <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Building2 className="w-8 h-8 text-gray-600" />
+                      <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        <img
+                          src={booking.hotel.images || "/placeholder-s2dgm.png"}
+                          alt={booking.hotel.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-semibold text-lg">{booking.hotel.name}</h3>

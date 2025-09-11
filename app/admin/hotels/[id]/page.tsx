@@ -25,7 +25,15 @@ interface Hotel {
   destination?: {
     name: string
   }
-  reviews?: any[]
+  reviews?: {
+    id: string
+    rating: number
+    comment: string
+    user: {
+      name: string
+    }
+    createdAt: string
+  }[]
 }
 
 export default function ViewHotelPage() {
@@ -240,7 +248,7 @@ export default function ViewHotelPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {hotel.reviews.map((review: any) => (
+                  {hotel.reviews.map((review) => (
                     <div key={review.id} className="p-4 border rounded-lg">
                       <div className="flex items-center gap-4 mb-2">
                         <div className="flex items-center gap-1">

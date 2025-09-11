@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { CreditCard, Smartphone, Shield, Lock, CheckCircle, Phone, Mail, Globe, ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 interface PaymentMethod {
   id: string
@@ -146,18 +147,18 @@ export default function PaymentPage() {
                 <h1 className="text-xl font-bold text-foreground">Ghana Tourism</h1>
               </div>
               <nav className="hidden md:flex items-center gap-6">
-                <a href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Home
-                </a>
-                <a href="/maps" className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/maps" className="text-muted-foreground hover:text-foreground transition-colors">
                   Interactive Map
-                </a>
-                <a href="/bookings" className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/bookings" className="text-muted-foreground hover:text-foreground transition-colors">
                   Bookings
-                </a>
-                <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact
-                </a>
+                </Link>
               </nav>
               <Button className="bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700">
                 Plan Your Trip
@@ -174,7 +175,7 @@ export default function PaymentPage() {
             </div>
             <h2 className="text-3xl font-bold text-foreground mb-4">Payment Successful!</h2>
             <p className="text-muted-foreground mb-8">
-              Your booking has been confirmed. We've sent a confirmation email with all the details.
+              Your booking has been confirmed. We&apos;ve sent Link confirmation email with all the details.
             </p>
 
             <Card className="p-6 mb-8">
@@ -211,7 +212,7 @@ export default function PaymentPage() {
                 Download Receipt
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="/">Return to Home</a>
+                <Link href="/">Return to Home</Link>
               </Button>
             </div>
           </div>
@@ -233,18 +234,18 @@ export default function PaymentPage() {
               <h1 className="text-xl font-bold text-foreground">Ghana Tourism</h1>
             </div>
             <nav className="hidden md:flex items-center gap-6">
-              <a href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
                 Home
-              </a>
-              <a href="/maps" className="text-muted-foreground hover:text-foreground transition-colors">
+              </Link>
+              <Link href="/maps" className="text-muted-foreground hover:text-foreground transition-colors">
                 Interactive Map
-              </a>
-              <a href="/bookings" className="text-muted-foreground hover:text-foreground transition-colors">
+              </Link>
+              <Link href="/bookings" className="text-muted-foreground hover:text-foreground transition-colors">
                 Bookings
-              </a>
-              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
+              </Link>
+              <Link href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">
                 Contact
-              </a>
+              </Link>
             </nav>
             <Button className="bg-gradient-to-r from-yellow-600 to-red-600 hover:from-yellow-700 hover:to-red-700">
               Plan Your Trip
@@ -257,10 +258,10 @@ export default function PaymentPage() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
             <Button variant="outline" asChild className="mb-4 bg-transparent">
-              <a href="/bookings">
+              <Link href="/bookings">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Booking
-              </a>
+              </Link>
             </Button>
             <h2 className="text-3xl font-bold text-foreground mb-2">Secure Payment</h2>
             <p className="text-muted-foreground">Complete your booking with our secure payment system</p>
@@ -363,7 +364,7 @@ export default function PaymentPage() {
                     </div>
                     <div className="p-4 bg-blue-50 rounded-lg">
                       <p className="text-sm text-blue-800">
-                        You will receive a prompt on your phone to authorize this payment of ${bookingData.total}.
+                        You will receive Link prompt on your phone to authorize this payment of ${bookingData.total}.
                       </p>
                     </div>
                   </div>
@@ -532,24 +533,24 @@ export default function PaymentPage() {
               <h5 className="font-semibold mb-4">Quick Links</h5>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="/" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="/" className="text-muted-foreground hover:text-background transition-colors">
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/maps" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="/maps" className="text-muted-foreground hover:text-background transition-colors">
                     Interactive Map
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/bookings" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="/bookings" className="text-muted-foreground hover:text-background transition-colors">
                     Bookings
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="#" className="text-muted-foreground hover:text-background transition-colors">
                     Travel Guide
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -558,24 +559,24 @@ export default function PaymentPage() {
               <h5 className="font-semibold mb-4">Services</h5>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="#" className="text-muted-foreground hover:text-background transition-colors">
                     Hotel Booking
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="#" className="text-muted-foreground hover:text-background transition-colors">
                     Tour Packages
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="#" className="text-muted-foreground hover:text-background transition-colors">
                     Transportation
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-muted-foreground hover:text-background transition-colors">
+                  <Link href="#" className="text-muted-foreground hover:text-background transition-colors">
                     Travel Insurance
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -601,7 +602,7 @@ export default function PaymentPage() {
 
           <div className="border-t border-muted-foreground/20 mt-8 pt-8 text-center">
             <p className="text-sm text-muted-foreground">
-              © 2024 Ghana Tourism System. All rights reserved. | Promoting Ghana's rich heritage and natural beauty.
+              © 2024 Ghana Tourism System. All rights reserved. | Promoting Ghana&apos;s rich heritage and natural beauty.
             </p>
           </div>
         </div>

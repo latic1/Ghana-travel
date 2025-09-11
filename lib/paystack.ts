@@ -42,7 +42,7 @@ export interface PaystackVerifyResponse {
       first_name: string
       last_name: string
     }
-    metadata: any
+    metadata: Record<string, unknown>
   }
 }
 

@@ -12,7 +12,7 @@ import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-interface Destination {
+interface Attraction {
   id: string
   name: string
   description: string
@@ -26,12 +26,12 @@ interface Destination {
   createdAt: string
 }
 
-export default function EditDestinationPage() {
+export default function EditAttractionPage() {
   const params = useParams()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [destination, setDestination] = useState<Destination | null>(null)
+  const [attraction, setAttraction] = useState<Attraction | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -45,12 +45,12 @@ export default function EditDestinationPage() {
   })
 
   useEffect(() => {
-    const fetchDestination = async () => {
+    const fetchAttraction = async () => {
       try {
-        const response = await fetch(`/api/destinations/${params.id}`)
+        const response = await fetch(`/api/attractions/${params.id}`)
         if (response.ok) {
           const data = await response.json()
-          setDestination(data)
+          setAttraction(data)
           setFormData({
             name: data.name,
             description: data.description,
@@ -63,20 +63,20 @@ export default function EditDestinationPage() {
             highlights: data.highlights ? JSON.parse(data.highlights).join(', ') : ''
           })
         } else {
-          toast.error('Failed to fetch destination')
-          router.push('/admin/destinations')
+          toast.error('Failed to fetch attraction')
+          router.push('/admin/attractions')
         }
       } catch (error) {
-        console.error('Error fetching destination:', error)
-        toast.error('Error fetching destination')
-        router.push('/admin/destinations')
+        console.error('Error fetching attraction:', error)
+        toast.error('Error fetching attraction')
+        router.push('/admin/attractions')
       } finally {
         setIsLoading(false)
       }
     }
 
     if (params.id) {
-      fetchDestination()
+      fetchAttraction()
     }
   }, [params.id, router])
 
@@ -85,7 +85,7 @@ export default function EditDestinationPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`/api/destinations/${params.id}`, {
+      const response = await fetch(`/api/attractions/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -97,15 +97,15 @@ export default function EditDestinationPage() {
       })
 
       if (response.ok) {
-        toast.success('Destination updated successfully!')
-        router.push('/admin/destinations')
+        toast.success('Attraction updated successfully!')
+        router.push('/admin/attractions')
       } else {
         const error = await response.json()
-        toast.error(`Failed to update destination: ${error.error}`)
+        toast.error(`Failed to update attraction: ${error.error}`)
       }
     } catch (error) {
-      console.error('Error updating destination:', error)
-      toast.error('Error updating destination')
+      console.error('Error updating attraction:', error)
+      toast.error('Error updating attraction')
     } finally {
       setIsSubmitting(false)
     }
@@ -120,18 +120,18 @@ export default function EditDestinationPage() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading destination...</p>
+          <p className="text-gray-600">Loading attraction...</p>
         </div>
       </div>
     )
   }
 
-  if (!destination) {
+  if (!attraction) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Destination not found</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Attraction not found</h3>
         <Button asChild>
-          <Link href="/admin/destinations">Back to Destinations</Link>
+          <Link href="/admin/attractions">Back to Attractions</Link>
         </Button>
       </div>
     )
@@ -142,22 +142,22 @@ export default function EditDestinationPage() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="outline" size="sm" asChild>
-          <Link href="/admin/destinations">
+          <Link href="/admin/attractions">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Destinations
+            Back to Attractions
           </Link>
         </Button>
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Edit Destination</h2>
-          <p className="text-gray-600">Update destination information</p>
+          <h2 className="text-3xl font-bold text-gray-900">Edit Attraction</h2>
+          <p className="text-gray-600">Update attraction information</p>
         </div>
       </div>
 
       {/* Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Edit Destination: {destination.name}</CardTitle>
-          <CardDescription>Update the destination details</CardDescription>
+          <CardTitle>Edit Attraction: {attraction.name}</CardTitle>
+          <CardDescription>Update the attraction details</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -242,7 +242,7 @@ export default function EditDestinationPage() {
                   id="imageUrl"
                   value={formData.imageUrl}
                   onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-                  placeholder="e.g., /images/destination.jpg"
+                  placeholder="e.g., /images/attraction.jpg"
                 />
               </div>
             </div>
@@ -254,7 +254,7 @@ export default function EditDestinationPage() {
                 id="description"
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Describe the destination..."
+                placeholder="Describe the attraction..."
                 rows={4}
                 required
               />
@@ -294,12 +294,12 @@ export default function EditDestinationPage() {
                 ) : (
                   <>
                     <Save className="w-4 h-4 mr-2" />
-                    Update Destination
+                    Update Attraction
                   </>
                 )}
               </Button>
               <Button type="button" variant="outline" asChild>
-                <Link href="/admin/destinations">Cancel</Link>
+                <Link href="/admin/attractions">Cancel</Link>
               </Button>
             </div>
           </form>

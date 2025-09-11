@@ -141,11 +141,6 @@ export default function ReviewsPage() {
     return new Date(dateString).toLocaleDateString()
   }
 
-  const getReviewType = (review: Review) => {
-    if (review.hotel) return 'Hotel'
-    if (review.destination) return 'Destination'
-    return 'Unknown'
-  }
 
   const getReviewTarget = (review: Review) => {
     if (review.hotel) {

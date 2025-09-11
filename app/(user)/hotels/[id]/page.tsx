@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MapPin, Star, Building2, Bed, DollarSign, ArrowLeft, Calendar, Phone, Mail, Users } from 'lucide-react'
+import { MapPin, Star, Building2, Bed, DollarSign, ArrowLeft, Calendar, Phone, Mail } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -25,7 +25,15 @@ interface Hotel {
   amenities: string
   availableRooms: number
   createdAt: string
-  reviews?: any[]
+  reviews?: {
+    id: string
+    rating: number
+    comment: string
+    user: {
+      name: string
+    }
+    createdAt: string
+  }[]
 }
 
 export default function HotelDetailPage() {
@@ -212,7 +220,7 @@ export default function HotelDetailPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {hotel.reviews.map((review: any) => (
+                  {hotel.reviews.map((review) => (
                     <div key={review.id} className="p-4 border rounded-lg">
                       <div className="flex items-center gap-4 mb-2">
                         <div className="flex items-center gap-1">

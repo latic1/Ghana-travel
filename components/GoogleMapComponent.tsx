@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 interface Location {
   id: string
@@ -21,37 +21,75 @@ interface GoogleMapComponentProps {
 }
 
 declare global {
+  namespace google {
+    namespace maps {
+      class Map {
+        constructor(element: HTMLElement, options: {
+          center: { lat: number; lng: number }
+          zoom: number
+          styles?: any[]
+        })
+        setCenter(center: { lat: number; lng: number }): void
+        setZoom(zoom: number): void
+      }
+      
+      class Marker {
+        constructor(options: {
+          position: { lat: number; lng: number }
+          map: Map
+          title: string
+          icon?: any
+        })
+        addListener(event: string, callback: () => void): void
+      }
+      
+      class InfoWindow {
+        constructor(options: {
+          content: string
+        })
+        open(map: Map, marker: Marker): void
+        setPosition(position: { lat: number; lng: number }): void
+      }
+      
+      class Polyline {
+        constructor(options: {
+          path: { lat: number; lng: number }[]
+          geodesic: boolean
+          strokeColor: string
+          strokeOpacity: number
+          strokeWeight: number
+          icons?: any[]
+        })
+        setMap(map: Map): void
+        addListener(event: string, callback: () => void): void
+      }
+      
+      namespace SymbolPath {
+        const FORWARD_CLOSED_ARROW: any
+      }
+      
+      class Size {
+        constructor(width: number, height: number)
+      }
+      
+      class Point {
+        constructor(x: number, y: number)
+      }
+    }
+  }
+  
   interface Window {
-    google: any
+    google: typeof google
   }
 }
 
 export default function GoogleMapComponent({ locations, onLocationSelect, apiKey }: GoogleMapComponentProps) {
   const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstanceRef = useRef<any>(null)
-  const markersRef = useRef<any[]>([])
+  const mapInstanceRef = useRef<google.maps.Map | null>(null)
+  const markersRef = useRef<google.maps.Marker[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
 
-  useEffect(() => {
-    // Load Google Maps script
-    const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
-    script.async = true
-    script.defer = true
-    
-    script.onload = () => {
-      setIsLoaded(true)
-      initializeMap()
-    }
-    
-    document.head.appendChild(script)
-
-    return () => {
-      document.head.removeChild(script)
-    }
-  }, [apiKey])
-
-  const initializeMap = () => {
+  const initializeMap = useCallback(() => {
     if (!mapRef.current || !window.google || mapInstanceRef.current) return
 
     // Initialize the map centered on Ghana
@@ -91,7 +129,7 @@ export default function GoogleMapComponent({ locations, onLocationSelect, apiKey
     }
 
     // Add markers for each location
-    const markers: any[] = []
+    const markers: google.maps.Marker[] = []
     locations.forEach((location) => {
       const icon = location.type === 'attraction' ? attractionIcon : accommodationIcon
       
@@ -172,14 +210,33 @@ export default function GoogleMapComponent({ locations, onLocationSelect, apiKey
           content: `<div class="p-2"><strong>${route.name}</strong></div>`
         })
         infoWindow.setPosition(route.coordinates[1])
-        infoWindow.open(map)
+        infoWindow.open(map, null as any)
       })
     })
 
     // Store references
     mapInstanceRef.current = map
     markersRef.current = markers
-  }
+  }, [locations, onLocationSelect])
+
+  useEffect(() => {
+    // Load Google Maps script
+    const script = document.createElement('script')
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
+    script.async = true
+    script.defer = true
+    
+    script.onload = () => {
+      setIsLoaded(true)
+      initializeMap()
+    }
+    
+    document.head.appendChild(script)
+
+    return () => {
+      document.head.removeChild(script)
+    }
+  }, [apiKey, initializeMap])
 
   if (!isLoaded) {
     return (

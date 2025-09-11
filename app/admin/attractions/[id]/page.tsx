@@ -9,100 +9,117 @@ import { MapPin, Star, Calendar, ArrowLeft, Building2, Edit, Trash2 } from 'luci
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-interface Destination {
+interface Attraction {
   id: string
   name: string
   description: string
   location: string
-  category: string
-  imageUrl: string
+  category: {
+    id: string
+    name: string
+    description?: string
+    color?: string
+    createdAt: string
+    updatedAt: string
+  }
+  images: string
   rating: number
-  priceRange: string
-  bestTimeToVisit?: string
-  highlights: string
+  price: number
+  duration: string
+  maxVisitors: number
+  availableSlots: number
   createdAt: string
-  hotels?: any[]
-  reviews?: any[]
+  hotels?: {
+    id: string
+    name: string
+    description: string
+    location: string
+    images: string
+    rating: number
+    pricePerNight: number
+  }[]
+  reviews?: {
+    id: string
+    rating: number
+    comment: string
+    user: {
+      name: string
+    }
+    createdAt: string
+  }[]
 }
 
-export default function ViewDestinationPage() {
+export default function ViewAttractionPage() {
   const params = useParams()
-  const [destination, setDestination] = useState<Destination | null>(null)
+  const [attraction, setAttraction] = useState<Attraction | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    const fetchDestination = async () => {
+    const fetchAttraction = async () => {
       try {
-        const response = await fetch(`/api/destinations/${params.id}`)
+        const response = await fetch(`/api/attractions/${params.id}`)
         if (response.ok) {
           const data = await response.json()
-          setDestination(data)
+          setAttraction(data)
         } else {
-          toast.error('Failed to fetch destination')
+          toast.error('Failed to fetch attraction')
         }
       } catch (error) {
-        console.error('Error fetching destination:', error)
-        toast.error('Error fetching destination')
+        console.error('Error fetching attraction:', error)
+        toast.error('Error fetching attraction')
       } finally {
         setIsLoading(false)
       }
     }
 
     if (params.id) {
-      fetchDestination()
+      fetchAttraction()
     }
   }, [params.id])
 
   const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this destination? This action cannot be undone.')) {
+    if (confirm('Are you sure you want to delete this attraction? This action cannot be undone.')) {
       setIsDeleting(true)
       try {
-        const response = await fetch(`/api/destinations/${params.id}`, {
+        const response = await fetch(`/api/attractions/${params.id}`, {
           method: 'DELETE',
         })
         
         if (response.ok) {
-          toast.success('Destination deleted successfully')
-          // Redirect back to destinations list
-          window.location.href = '/admin/destinations'
+          toast.success('Attraction deleted successfully')
+          // Redirect back to attractions list
+          window.location.href = '/admin/attractions'
         } else {
-          toast.error('Failed to delete destination')
+          toast.error('Failed to delete attraction')
         }
       } catch (error) {
-        console.error('Error deleting destination:', error)
-        toast.error('Error deleting destination')
+        console.error('Error deleting attraction:', error)
+        toast.error('Error deleting attraction')
       } finally {
         setIsDeleting(false)
       }
     }
   }
 
-  const parseHighlights = (highlights: string) => {
-    try {
-      return JSON.parse(highlights)
-    } catch {
-      return []
-    }
-  }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading destination...</p>
+          <p className="text-gray-600">Loading attraction...</p>
         </div>
       </div>
     )
   }
 
-  if (!destination) {
+  if (!attraction) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Destination not found</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Attraction not found</h3>
         <Button asChild>
-          <Link href="/admin/destinations">Back to Destinations</Link>
+          <Link href="/admin/attractions">Back to Attractions</Link>
         </Button>
       </div>
     )
@@ -114,20 +131,20 @@ export default function ViewDestinationPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/admin/destinations">
+            <Link href="/admin/attractions">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Destinations
+              Back to Attractions
             </Link>
           </Button>
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">{destination.name}</h2>
-            <p className="text-gray-600">Destination details and information</p>
+            <h2 className="text-3xl font-bold text-gray-900">{attraction.name}</h2>
+            <p className="text-gray-600">Attraction details and information</p>
           </div>
         </div>
         
         <div className="flex gap-2">
           <Button asChild>
-            <Link href={`/admin/destinations/${destination.id}/edit`}>
+            <Link href={`/admin/attractions/${attraction.id}/edit`}>
               <Edit className="w-4 h-4 mr-2" />
               Edit
             </Link>
@@ -159,30 +176,42 @@ export default function ViewDestinationPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">Name</label>
-                  <p className="text-gray-900">{destination.name}</p>
+                  <p className="text-gray-900">{attraction.name}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Location</label>
-                  <p className="text-gray-900">{destination.location}</p>
+                  <p className="text-gray-900">{attraction.location}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Category</label>
-                  <Badge className="bg-blue-100 text-blue-800">{destination.category}</Badge>
+                  <Badge className="bg-blue-100 text-blue-800">{attraction.category?.name || 'No category'}</Badge>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Price Range</label>
-                  <Badge className="bg-green-100 text-green-800">{destination.priceRange}</Badge>
+                  <label className="text-sm font-medium text-gray-500">Price</label>
+                  <span className="text-green-600 font-medium">₦{attraction.price?.toLocaleString() || '0'}</span>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Duration</label>
+                  <p className="text-gray-900">{attraction.duration || 'Not specified'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Max Visitors</label>
+                  <p className="text-gray-900">{attraction.maxVisitors || 'Not specified'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Available Slots</label>
+                  <p className="text-gray-900">{attraction.availableSlots || 'Not specified'}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Rating</label>
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="font-medium">{destination.rating}</span>
+                    <span className="font-medium">{attraction.rating}</span>
                   </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">Created</label>
-                  <p className="text-gray-900">{new Date(destination.createdAt).toLocaleDateString()}</p>
+                  <p className="text-gray-900">{new Date(attraction.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
             </CardContent>
@@ -194,28 +223,39 @@ export default function ViewDestinationPage() {
               <CardTitle>Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 leading-relaxed">{destination.description}</p>
+              <p className="text-gray-700 leading-relaxed">{attraction.description}</p>
             </CardContent>
           </Card>
 
-          {/* Highlights */}
+          {/* Additional Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Highlights & Features</CardTitle>
+              <CardTitle>Additional Information</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {parseHighlights(destination.highlights).map((highlight: string, index: number) => (
-                  <Badge key={index} variant="outline">
-                    {highlight}
-                  </Badge>
-                ))}
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Duration</label>
+                  <p className="text-gray-900">{attraction.duration}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Capacity</label>
+                  <p className="text-gray-900">{attraction.maxVisitors} visitors max</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Available Slots</label>
+                  <p className="text-gray-900">{attraction.availableSlots} slots available</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Price</label>
+                  <p className="text-green-600 font-medium text-lg">₦{attraction.price.toLocaleString()}</p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Hotels */}
-          {destination.hotels && destination.hotels.length > 0 && (
+          {attraction.hotels && attraction.hotels.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle>Nearby Hotels</CardTitle>
@@ -223,7 +263,7 @@ export default function ViewDestinationPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {destination.hotels.map((hotel: any) => (
+                  {attraction.hotels.map((hotel) => (
                     <div key={hotel.id} className="flex items-center gap-4 p-4 border rounded-lg">
                       <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
                         <Building2 className="w-8 h-8 text-gray-500" />
@@ -255,21 +295,11 @@ export default function ViewDestinationPage() {
               <CardTitle>Quick Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {destination.bestTimeToVisit && (
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-gray-500" />
-                  <div>
-                    <p className="font-medium text-sm">Best Time to Visit</p>
-                    <p className="text-sm text-gray-600">{destination.bestTimeToVisit}</p>
-                  </div>
-                </div>
-              )}
-              
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="font-medium text-sm">Location</p>
-                  <p className="text-sm text-gray-600">{destination.location}</p>
+                  <p className="text-sm text-gray-600">{attraction.location}</p>
                 </div>
               </div>
 
@@ -277,7 +307,25 @@ export default function ViewDestinationPage() {
                 <Star className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="font-medium text-sm">Rating</p>
-                  <p className="text-sm text-gray-600">{destination.rating} out of 5</p>
+                  <p className="text-sm text-gray-600">{attraction.rating} out of 5</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-gray-500" />
+                <div>
+                  <p className="font-medium text-sm">Duration</p>
+                  <p className="text-sm text-gray-600">{attraction.duration}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 text-xs font-bold">₦</span>
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Price</p>
+                  <p className="text-sm text-gray-600">₦{attraction.price.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
@@ -286,14 +334,14 @@ export default function ViewDestinationPage() {
           {/* Image Placeholder */}
           <Card>
             <CardHeader>
-              <CardTitle>Image</CardTitle>
+              <CardTitle>Images</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
                 <MapPin className="w-16 h-16 text-gray-400" />
               </div>
               <p className="text-sm text-gray-500 mt-2 text-center">
-                {destination.imageUrl || 'No image available'}
+                {attraction.images || 'No images available'}
               </p>
             </CardContent>
           </Card>

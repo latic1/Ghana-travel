@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MapPin, Star, Calendar, ArrowLeft, Building2, Phone, Mail, Users, BookOpen } from 'lucide-react'
+import { MapPin, Star, Calendar, ArrowLeft, Building2, Phone, Mail, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
 
@@ -18,18 +18,39 @@ interface Destination {
   name: string
   description: string
   location: string
-  category: string
-  imageUrl: string
+  category: {
+    id: string
+    name: string
+    description?: string
+    color?: string
+    createdAt: string
+    updatedAt: string
+  }
+  images: string
   rating: number
-  priceRange: string
-  bestTimeToVisit?: string
-  highlights: string
   price: number
+  duration: string
   maxVisitors: number
   availableSlots: number
   createdAt: string
-  hotels?: any[]
-  reviews?: any[]
+  hotels?: {
+    id: string
+    name: string
+    description: string
+    location: string
+    images: string
+    rating: number
+    pricePerNight: number
+  }[]
+  reviews?: {
+    id: string
+    rating: number
+    comment: string
+    user: {
+      name: string
+    }
+    createdAt: string
+  }[]
 }
 
 export default function DestinationDetailPage() {
@@ -64,13 +85,6 @@ export default function DestinationDetailPage() {
     }
   }, [params.id])
 
-  const parseHighlights = (highlights: string) => {
-    try {
-      return JSON.parse(highlights)
-    } catch {
-      return []
-    }
-  }
 
   const calculateTotalPrice = () => {
     if (!destination) return 0
@@ -156,17 +170,21 @@ export default function DestinationDetailPage() {
           </div>
           <div className="flex gap-2">
             <Badge className="bg-blue-100 text-blue-800">
-              {destination.category}
+              {destination.category?.name || 'No category'}
             </Badge>
             <Badge className="bg-green-100 text-green-800">
-              {destination.priceRange}
+              ₦{destination.price?.toLocaleString() || '0'}
             </Badge>
           </div>
         </div>
 
-        {/* Image Placeholder */}
-        <div className="h-96 bg-gray-200 rounded-lg flex items-center justify-center mb-6">
-          <MapPin className="w-32 h-32 text-gray-400" />
+        {/* Image */}
+        <div className="h-96 bg-gray-200 rounded-lg mb-6 overflow-hidden">
+          <img
+            src={destination.images || "/placeholder-s2dgm.png"}
+            alt={destination.name}
+            className="w-full h-full object-cover"
+          />
         </div>
       </div>
 
@@ -183,19 +201,33 @@ export default function DestinationDetailPage() {
             </CardContent>
           </Card>
 
-          {/* Highlights */}
+          {/* Additional Information */}
           <Card>
             <CardHeader>
-              <CardTitle>Highlights & Features</CardTitle>
+              <CardTitle>Additional Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {parseHighlights(destination.highlights).map((highlight: string, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    <span className="text-gray-700">{highlight}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Duration:</span>
+                    <span className="font-medium">{destination.duration || 'Not specified'}</span>
                   </div>
-                ))}
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Max Visitors:</span>
+                    <span className="font-medium">{destination.maxVisitors || 'Not specified'}</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Available Slots:</span>
+                    <span className="font-medium">{destination.availableSlots || 'Not specified'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600">Price per Person:</span>
+                    <span className="font-medium text-green-600">₦{destination.price?.toLocaleString() || '0'}</span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -209,7 +241,7 @@ export default function DestinationDetailPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {destination.hotels.map((hotel: any) => (
+                  {destination.hotels.map((hotel) => (
                     <div key={hotel.id} className="flex items-center gap-4 p-4 border rounded-lg">
                       <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
                         <Building2 className="w-8 h-8 text-gray-500" />
@@ -247,7 +279,7 @@ export default function DestinationDetailPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-bold text-green-600">
-                  ${destination.price}
+                  ₦{destination.price?.toLocaleString() || '0'}
                 </span>
                 <span className="text-gray-600">per person</span>
               </div>
@@ -256,7 +288,7 @@ export default function DestinationDetailPage() {
                 <div className="flex items-center justify-between text-lg font-semibold border-t pt-3">
                   <span className="text-gray-700">Total Price:</span>
                   <span className="text-2xl font-bold text-green-600">
-                    ${totalPrice}
+                    ₦{totalPrice.toLocaleString()}
                   </span>
                 </div>
               )}
@@ -339,16 +371,6 @@ export default function DestinationDetailPage() {
               <CardTitle>Quick Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {destination.bestTimeToVisit && (
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-gray-500" />
-                  <div>
-                    <p className="font-medium text-sm">Best Time to Visit</p>
-                    <p className="text-sm text-gray-600">{destination.bestTimeToVisit}</p>
-                  </div>
-                </div>
-              )}
-              
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-gray-500" />
                 <div>
@@ -362,6 +384,14 @@ export default function DestinationDetailPage() {
                 <div>
                   <p className="font-medium text-sm">Rating</p>
                   <p className="text-sm text-gray-600">{destination.rating} out of 5</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-gray-500" />
+                <div>
+                  <p className="font-medium text-sm">Duration</p>
+                  <p className="text-sm text-gray-600">{destination.duration || 'Not specified'}</p>
                 </div>
               </div>
             </CardContent>

@@ -10,6 +10,7 @@ export async function GET(
     const attraction = await prisma.attraction.findUnique({
       where: { id },
       include: {
+        category: true,
         reviews: {
           include: {
             user: {
@@ -54,8 +55,8 @@ export async function PUT(
         name: body.name,
         description: body.description,
         location: body.location,
-        category: body.category,
-        imageUrl: body.imageUrl,
+        categoryId: body.categoryId,
+        images: body.images,
         rating: body.rating,
         price: body.price,
         duration: body.duration,

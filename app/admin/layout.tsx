@@ -12,7 +12,8 @@ import {
   Star, 
   Settings,
   LogOut,
-  Home
+  Home,
+  Tag
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -41,6 +42,7 @@ export default function AdminLayout({
   const menuItems = [
     { href: '/admin', icon: Home, label: 'Dashboard' },
     { href: '/admin/attractions', icon: MapPin, label: 'Attractions' },
+    { href: '/admin/attraction-categories', icon: Tag, label: 'Categories' },
     { href: '/admin/hotels', icon: Building2, label: 'Hotels' },
     { href: '/admin/users', icon: Users, label: 'Users' },
     { href: '/admin/bookings', icon: Calendar, label: 'Bookings' },

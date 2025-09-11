@@ -1,11 +1,10 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Star, Calendar, Building2, Search, Filter, BookOpen } from "lucide-react"
+import { MapPin, Star, Calendar, Building2, Search, BookOpen } from "lucide-react"
 import SearchAndFilter, { SearchFilters } from "@/components/SearchAndFilter"
 import Link from "next/link"
 
@@ -14,8 +13,15 @@ interface Attraction {
   name: string
   description: string
   location: string
-  category: string
-  imageUrl: string
+  category: {
+    id: string
+    name: string
+    description?: string
+    color?: string
+    createdAt: string
+    updatedAt: string
+  }
+  images: string
   rating: number
   price: number
   duration: string
@@ -29,7 +35,7 @@ interface Hotel {
   description: string
   location: string
   category: string
-  imageUrl: string
+  images: string
   rating: number
   pricePerNight: number
   amenities: string
@@ -37,7 +43,6 @@ interface Hotel {
 }
 
 export default function HomePage() {
-  const { data: session } = useSession()
   const [attractions, setAttractions] = useState<Attraction[]>([])
   const [hotels, setHotels] = useState<Hotel[]>([])
   const [filteredAttractions, setFilteredAttractions] = useState<Attraction[]>([])
@@ -105,7 +110,7 @@ export default function HomePage() {
 
     // Apply category filter
     if (filters.category !== 'all') {
-      filteredAttr = filteredAttr.filter(attraction => attraction.category === filters.category)
+      filteredAttr = filteredAttr.filter(attraction => attraction.category?.name === filters.category)
       filteredHot = filteredHot.filter(hotel => hotel.category === filters.category)
     }
 
@@ -146,20 +151,6 @@ export default function HomePage() {
     setFilteredHotels(hotels)
   }
 
-  const getCategoryColor = (category: string) => {
-    const colors: { [key: string]: string } = {
-      HISTORIC: 'bg-blue-100 text-blue-800',
-      NATURAL: 'bg-green-100 text-green-800',
-      CULTURAL: 'bg-purple-100 text-purple-800',
-      ADVENTURE: 'bg-orange-100 text-orange-800',
-      LUXURY: 'bg-purple-100 text-purple-800',
-      BOUTIQUE: 'bg-pink-100 text-pink-800',
-      ECO_FRIENDLY: 'bg-green-100 text-green-800',
-      BUDGET: 'bg-blue-100 text-blue-800',
-      RESORT: 'bg-orange-100 text-orange-800'
-    }
-    return colors[category] || 'bg-gray-100 text-gray-800'
-  }
 
 
 
@@ -255,12 +246,12 @@ export default function HomePage() {
                     <Card key={attraction.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="h-48 bg-gradient-to-br from-blue-400 to-blue-600 relative">
                         <img
-                          src={attraction.imageUrl || "/placeholder-s2dgm.png"}
+                          src={attraction.images || "/placeholder-s2dgm.png"}
                           alt={attraction.name}
                           className="w-full h-full object-cover"
                         />
                         <Badge className="absolute top-4 left-4 bg-white/90 text-foreground">
-                          {attraction.category}
+                          {attraction.category?.name || 'No category'}
                         </Badge>
                       </div>
                       <CardHeader>
@@ -314,7 +305,7 @@ export default function HomePage() {
                     <Card key={hotel.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                       <div className="h-48 bg-gradient-to-br from-blue-400 to-purple-500 relative">
                         <img
-                          src={hotel.imageUrl || "/placeholder-s2dgm.png"}
+                          src={hotel.images || "/placeholder-s2dgm.png"}
                           alt={hotel.name}
                           className="w-full h-full object-cover"
                         />
@@ -379,7 +370,7 @@ export default function HomePage() {
             <div className="text-center mb-12">
               <h3 className="text-3xl font-bold text-foreground mb-4">Featured Attractions</h3>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                From historic castles to pristine beaches, discover Ghana's most captivating attractions
+                From historic castles to pristine beaches, discover Ghana&apos;s most captivating attractions
               </p>
             </div>
 
@@ -388,12 +379,12 @@ export default function HomePage() {
                 <Card key={attraction.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="h-48 bg-gradient-to-br from-blue-400 to-blue-600 relative">
                     <img
-                      src={attraction.imageUrl || "/placeholder-s2dgm.png"}
+                      src={attraction.images || "/placeholder-s2dgm.png"}
                       alt={attraction.name}
                       className="w-full h-full object-cover"
                     />
                     <Badge className="absolute top-4 left-4 bg-white/90 text-foreground">
-                      {attraction.category}
+                      {attraction.category?.name || 'No category'}
                     </Badge>
                   </div>
                   <CardHeader>
@@ -471,7 +462,7 @@ export default function HomePage() {
                 <Card key={hotel.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="h-48 bg-gradient-to-br from-blue-400 to-purple-500 relative">
                     <img
-                      src={hotel.imageUrl || "/placeholder-s2dgm.png"}
+                      src={hotel.images || "/placeholder-s2dgm.png"}
                       alt={hotel.name}
                       className="w-full h-full object-cover"
                     />

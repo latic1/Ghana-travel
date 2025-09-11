@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
-import { User, LogOut, Settings, Calendar, Star } from 'lucide-react'
+import { User, LogOut, Calendar, Star } from 'lucide-react'
 import Link from 'next/link'
 
 export default function UserMenu() {

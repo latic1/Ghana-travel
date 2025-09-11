@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent } from '@/components/ui/card'
-import { Search, MapPin, Building2, Filter, X } from 'lucide-react'
+import { Search, Filter, X } from 'lucide-react'
 
 interface SearchAndFilterProps {
   onSearch: (filters: SearchFilters) => void

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Building2, Star, Search, Filter, Bed, DollarSign, MapPin } from 'lucide-react'
+import { Building2, Star, Search, Bed, DollarSign, MapPin } from 'lucide-react'
 import Link from 'next/link'
 
 interface Hotel {
@@ -131,7 +131,7 @@ export default function HotelsPage() {
           Find Your Perfect Stay in Ghana
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          From luxury resorts to eco-friendly lodges, discover comfortable accommodations across Ghana's most beautiful destinations.
+          From luxury resorts to eco-friendly lodges, discover comfortable accommodations across Ghana&apos;s most beautiful destinations.
         </p>
       </div>
 

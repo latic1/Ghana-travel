@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         description: body.description,
         location: body.location,
         category: body.category,
-        imageUrl: body.imageUrl,
+        images: body.images || '[]',
         rating: body.rating || 0,
         pricePerNight: body.pricePerNight,
         amenities: body.amenities,
