@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import ImageUpload from '@/components/ImageUpload'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -260,7 +261,7 @@ export default function NewAttractionPage() {
 
               {/* Price */}
               <div className="space-y-2">
-                <Label htmlFor="price">Price (NGN) *</Label>
+                <Label htmlFor="price">Price (GHS) *</Label>
                 <Input
                   id="price"
                   type="number"
@@ -292,17 +293,17 @@ export default function NewAttractionPage() {
               </div>
 
               {/* Images */}
-              <div className="space-y-2">
-                <Label htmlFor="images">Image URL *</Label>
-                <Input
-                  id="images"
-                  className={getInputClassName('images')}
-                  value={formData.images}
-                  onChange={(e) => handleInputChange('images', e.target.value)}
-                  placeholder="e.g., /images/attraction.jpg"
-                />
-                {errors.images && <p className="text-sm text-red-500">{errors.images}</p>}
-              </div>
+              <ImageUpload
+                value={formData.images ? formData.images.split(',').map(url => url.trim()) : []}
+                onChange={(value) => handleInputChange('images', Array.isArray(value) ? value.join(',') : value)}
+                multiple={true}
+                maxImages={5}
+                folder="attractions"
+                label="Attraction Images"
+                description="Upload multiple images for this attraction (up to 5)"
+                className={errors.images ? 'border-red-500' : ''}
+              />
+              {errors.images && <p className="text-sm text-red-500">{errors.images}</p>}
             </div>
 
             {/* Description */}

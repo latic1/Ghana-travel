@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
 
     const uploadedImages = await Promise.all(uploadPromises)
 
+
     return NextResponse.json({
       success: true,
       images: uploadedImages

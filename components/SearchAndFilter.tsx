@@ -130,9 +130,9 @@ export default function SearchAndFilter({ onSearch, onClear }: SearchAndFilterPr
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Prices</SelectItem>
-                      <SelectItem value="budget">Budget ($0-$50)</SelectItem>
-                      <SelectItem value="moderate">Moderate ($51-$150)</SelectItem>
-                      <SelectItem value="luxury">Luxury ($151+)</SelectItem>
+                      <SelectItem value="budget">Budget (₵0-₵250)</SelectItem>
+                      <SelectItem value="moderate">Moderate (₵251-₵750)</SelectItem>
+                      <SelectItem value="luxury">Luxury (₵751+)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

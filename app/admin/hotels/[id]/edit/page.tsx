@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import ImageUpload from '@/components/ImageUpload'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -18,18 +19,12 @@ interface Hotel {
   description: string
   location: string
   category: string
-  imageUrl: string
+  images: string
   rating: number
   pricePerNight: number
   amenities: string
   availableRooms: number
-  destinationId: string
   createdAt: string
-}
-
-interface Destination {
-  id: string
-  name: string
 }
 
 export default function EditHotelPage() {
@@ -38,18 +33,16 @@ export default function EditHotelPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hotel, setHotel] = useState<Hotel | null>(null)
-  const [destinations, setDestinations] = useState<Destination[]>([])
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     location: '',
     category: '',
-    imageUrl: '',
+    images: '',
     rating: 0,
     pricePerNight: 0,
     amenities: '',
     availableRooms: 0,
-    destinationId: ''
   })
 
   useEffect(() => {
@@ -65,24 +58,17 @@ export default function EditHotelPage() {
             description: hotelData.description,
             location: hotelData.location,
             category: hotelData.category,
-            imageUrl: hotelData.imageUrl,
+            images: hotelData.images,
             rating: hotelData.rating,
             pricePerNight: hotelData.pricePerNight,
             amenities: hotelData.amenities ? JSON.parse(hotelData.amenities).join(', ') : '',
             availableRooms: hotelData.availableRooms,
-            destinationId: hotelData.destinationId
           })
         } else {
           toast.error('Failed to fetch hotel')
           router.push('/admin/hotels')
         }
 
-        // Fetch destinations
-        const destinationsResponse = await fetch('/api/destinations')
-        if (destinationsResponse.ok) {
-          const destinationsData = await destinationsResponse.json()
-          setDestinations(destinationsData)
-        }
       } catch (error) {
         console.error('Error fetching data:', error)
         toast.error('Error fetching data')
@@ -220,23 +206,6 @@ export default function EditHotelPage() {
                 </Select>
               </div>
 
-              {/* Destination */}
-              <div className="space-y-2">
-                <Label htmlFor="destinationId">Destination *</Label>
-                <Select value={formData.destinationId} onValueChange={(value) => handleInputChange('destinationId', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select destination" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {destinations.map((destination) => (
-                      <SelectItem key={destination.id} value={destination.id}>
-                        {destination.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* Rating */}
               <div className="space-y-2">
                 <Label htmlFor="rating">Rating</Label>
@@ -280,16 +249,15 @@ export default function EditHotelPage() {
                 />
               </div>
 
-              {/* Image URL */}
-              <div className="space-y-2">
-                <Label htmlFor="imageUrl">Image URL</Label>
-                <Input
-                  id="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-                  placeholder="e.g., /images/hotel.jpg"
-                />
-              </div>
+              {/* Image Upload */}
+              <ImageUpload
+                value={formData.images}
+                onChange={(value) => handleInputChange('images', value as string)}
+                multiple={false}
+                folder="hotels"
+                label="Hotel Image"
+                description="Upload a main image for this hotel"
+              />
             </div>
 
             {/* Description */}

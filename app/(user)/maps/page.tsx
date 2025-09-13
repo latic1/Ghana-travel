@@ -103,7 +103,7 @@ export default function MapsPage() {
       region: 'Greater Accra Region',
       type: 'accommodation',
       rating: 4.8,
-      price: '$200-400/night',
+      price: '₵1,000-2,000/night',
       coordinates: [5.5600, -0.1869]
     },
     {
@@ -114,7 +114,7 @@ export default function MapsPage() {
       region: 'Greater Accra Region',
       type: 'accommodation',
       rating: 4.7,
-      price: '$180-350/night',
+      price: '₵900-1,750/night',
       coordinates: [5.5500, -0.1900]
     },
     {
@@ -125,7 +125,7 @@ export default function MapsPage() {
       region: 'Central Region',
       type: 'accommodation',
       rating: 4.5,
-      price: '$120-250/night',
+      price: '₵600-1,250/night',
       coordinates: [5.0833, -1.3500]
     },
     {
@@ -136,7 +136,7 @@ export default function MapsPage() {
       region: 'Ashanti Region',
       type: 'accommodation',
       rating: 4.4,
-      price: '$100-200/night',
+      price: '₵500-1,000/night',
       coordinates: [6.7000, -1.6167]
     }
   ])

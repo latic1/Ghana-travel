@@ -306,7 +306,7 @@ export default function ViewHotelPage() {
                 <DollarSign className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="font-medium text-sm">Price Per Night</p>
-                  <p className="text-sm text-gray-600">${hotel.pricePerNight}</p>
+                  <p className="text-sm text-gray-600">₵{hotel.pricePerNight}</p>
                 </div>
               </div>
 

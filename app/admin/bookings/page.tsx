@@ -245,7 +245,7 @@ export default function BookingsPage() {
                       </div>
                     </td>
                     <td className="p-3 text-sm">{booking.guests}</td>
-                    <td className="p-3 font-medium">${booking.totalPrice}</td>
+                    <td className="p-3 font-medium">₵{booking.totalPrice}</td>
                     <td className="p-3">
                       <Badge className={getStatusColor(booking.status)}>
                         {booking.status}

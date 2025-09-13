@@ -276,7 +276,7 @@ export default function ViewAttractionPage() {
                             <Star className="w-4 h-4 text-yellow-500 fill-current" />
                             {hotel.rating}
                           </span>
-                          <span className="text-green-600 font-medium">${hotel.pricePerNight}/night</span>
+                          <span className="text-green-600 font-medium">₵{hotel.pricePerNight}/night</span>
                         </div>
                       </div>
                     </div>

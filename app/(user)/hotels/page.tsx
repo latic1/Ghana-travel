@@ -77,13 +77,13 @@ export default function HotelsPage() {
     if (priceFilter !== 'all') {
       switch (priceFilter) {
         case 'budget':
-          filtered = filtered.filter(hotel => hotel.pricePerNight <= 50)
+          filtered = filtered.filter(hotel => hotel.pricePerNight <= 250)
           break
         case 'moderate':
-          filtered = filtered.filter(hotel => hotel.pricePerNight > 50 && hotel.pricePerNight <= 150)
+          filtered = filtered.filter(hotel => hotel.pricePerNight > 250 && hotel.pricePerNight <= 750)
           break
         case 'luxury':
-          filtered = filtered.filter(hotel => hotel.pricePerNight > 150)
+          filtered = filtered.filter(hotel => hotel.pricePerNight > 750)
           break
       }
     }
@@ -170,9 +170,9 @@ export default function HotelsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Prices</SelectItem>
-                  <SelectItem value="budget">Budget ($0-$50)</SelectItem>
-                  <SelectItem value="moderate">Moderate ($51-$150)</SelectItem>
-                  <SelectItem value="luxury">Luxury ($151+)</SelectItem>
+                  <SelectItem value="budget">Budget (₵0-₵250)</SelectItem>
+                  <SelectItem value="moderate">Moderate (₵251-₵750)</SelectItem>
+                  <SelectItem value="luxury">Luxury (₵751+)</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -230,7 +230,7 @@ export default function HotelsPage() {
                 </div>
                 <div className="flex items-center gap-1">
                   <DollarSign className="w-4 h-4" />
-                  <span className="font-medium">${hotel.pricePerNight}/night</span>
+                  <span className="font-medium">₵{hotel.pricePerNight}/night</span>
                 </div>
               </div>
               

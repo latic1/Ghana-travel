@@ -196,9 +196,9 @@ export default function HotelsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Prices</SelectItem>
-                <SelectItem value="budget">Budget ($0-100)</SelectItem>
-                <SelectItem value="moderate">Moderate ($101-200)</SelectItem>
-                <SelectItem value="luxury">Luxury ($200+)</SelectItem>
+                <SelectItem value="budget">Budget (₵0-100)</SelectItem>
+                <SelectItem value="moderate">Moderate (₵101-200)</SelectItem>
+                <SelectItem value="luxury">Luxury (₵200+)</SelectItem>
               </SelectContent>
             </Select>
 
@@ -261,7 +261,7 @@ export default function HotelsPage() {
                     </td>
                     <td className="p-3">
                       <div className="flex flex-col">
-                        <span className="font-medium">${hotel.pricePerNight}</span>
+                        <span className="font-medium">₵{hotel.pricePerNight}</span>
                         <Badge className={getPriceColor(getPriceRange(hotel.pricePerNight))}>
                           {getPriceRange(hotel.pricePerNight)}
                         </Badge>

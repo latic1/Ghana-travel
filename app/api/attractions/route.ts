@@ -27,6 +27,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     
+    
     // Validate required fields
     const requiredFields = ['name', 'description', 'location', 'categoryId', 'duration', 'price', 'maxVisitors', 'availableSlots']
     const missingFields = requiredFields.filter(field => !body[field])

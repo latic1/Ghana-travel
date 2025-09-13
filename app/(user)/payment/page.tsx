@@ -72,7 +72,7 @@ export default function PaymentPage() {
     checkOut: "Dec 18, 2024",
     guests: 2,
     nights: 3,
-    roomPrice: 180,
+    roomPrice: 900,
     serviceFee: 15,
     taxes: 59,
     total: 599,
@@ -199,7 +199,7 @@ export default function PaymentPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Total Paid:</span>
-                  <span className="font-bold text-lg">${bookingData.total}</span>
+                  <span className="font-bold text-lg">₵{bookingData.total}</span>
                 </div>
               </div>
             </Card>
@@ -364,7 +364,7 @@ export default function PaymentPage() {
                     </div>
                     <div className="p-4 bg-blue-50 rounded-lg">
                       <p className="text-sm text-blue-800">
-                        You will receive Link prompt on your phone to authorize this payment of ${bookingData.total}.
+                        You will receive Link prompt on your phone to authorize this payment of ₵{bookingData.total}.
                       </p>
                     </div>
                   </div>
@@ -411,7 +411,7 @@ export default function PaymentPage() {
                 ) : (
                   <div className="flex items-center gap-2">
                     <Lock className="w-5 h-5" />
-                    Pay ${bookingData.total}
+                    Pay ₵{bookingData.total}
                   </div>
                 )}
               </Button>
@@ -454,17 +454,17 @@ export default function PaymentPage() {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>
-                        ${bookingData.roomPrice} × {bookingData.nights} nights
+                        ₵{bookingData.roomPrice} × {bookingData.nights} nights
                       </span>
-                      <span>${bookingData.roomPrice * bookingData.nights}</span>
+                      <span>₵{bookingData.roomPrice * bookingData.nights}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Service fee</span>
-                      <span>${bookingData.serviceFee}</span>
+                      <span>₵{bookingData.serviceFee}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Taxes</span>
-                      <span>${bookingData.taxes}</span>
+                      <span>₵{bookingData.taxes}</span>
                     </div>
                   </div>
 
@@ -472,7 +472,7 @@ export default function PaymentPage() {
 
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>${bookingData.total}</span>
+                    <span>₵{bookingData.total}</span>
                   </div>
                 </div>
               </Card>

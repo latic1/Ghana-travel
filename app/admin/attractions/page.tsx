@@ -259,7 +259,7 @@ export default function AttractionsPage() {
                       </Badge>
                     </td>
                     <td className="p-3">
-                      <span className="text-green-600 font-medium">₦{attraction.price.toLocaleString()}</span>
+                      <span className="text-green-600 font-medium">₵{attraction.price.toLocaleString()}</span>
                     </td>
                     <td className="p-3">
                       <div className="flex items-center gap-1">

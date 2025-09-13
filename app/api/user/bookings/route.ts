@@ -24,7 +24,7 @@ export async function GET() {
             id: true,
             name: true,
             location: true,
-            imageUrl: true,
+            images: true,
           }
         },
         attraction: {
@@ -32,7 +32,7 @@ export async function GET() {
             id: true,
             name: true,
             location: true,
-            imageUrl: true,
+            images: true,
           }
         }
       },

@@ -177,7 +177,7 @@ export default function HotelDetailPage() {
               </div>
               <div className="absolute top-4 right-4">
                 <Badge className="bg-white text-gray-900 shadow-lg">
-                  ${hotel.pricePerNight}/night
+                  ₵{hotel.pricePerNight}/night
                 </Badge>
               </div>
             </div>
@@ -277,7 +277,7 @@ export default function HotelDetailPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-bold text-green-600">
-                  ${hotel.pricePerNight}
+                  ₵{hotel.pricePerNight}
                 </span>
                 <span className="text-gray-600">per night</span>
               </div>
@@ -286,7 +286,7 @@ export default function HotelDetailPage() {
                 <div className="flex items-center justify-between text-lg font-semibold border-t pt-3">
                   <span className="text-gray-700">Total Price:</span>
                   <span className="text-2xl font-bold text-green-600">
-                    ${totalPrice}
+                    ₵{totalPrice}
                   </span>
                 </div>
               )}
@@ -428,7 +428,7 @@ export default function HotelDetailPage() {
                 <DollarSign className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="font-medium text-sm">Price Per Night</p>
-                  <p className="text-sm text-gray-600">${hotel.pricePerNight}</p>
+                  <p className="text-sm text-gray-600">₵{hotel.pricePerNight}</p>
                 </div>
               </div>
 

@@ -81,16 +81,16 @@ export default function DestinationsPage() {
     if (priceFilter !== 'all') {
       switch (priceFilter) {
         case 'BUDGET':
-          filtered = filtered.filter(dest => dest.price <= 50)
+          filtered = filtered.filter(dest => dest.price <= 250)
           break
         case 'MODERATE':
-          filtered = filtered.filter(dest => dest.price > 50 && dest.price <= 150)
+          filtered = filtered.filter(dest => dest.price > 250 && dest.price <= 750)
           break
         case 'LUXURY':
-          filtered = filtered.filter(dest => dest.price > 150)
+          filtered = filtered.filter(dest => dest.price > 750)
           break
         case 'PREMIUM':
-          filtered = filtered.filter(dest => dest.price > 300)
+          filtered = filtered.filter(dest => dest.price > 1500)
           break
       }
     }
@@ -107,20 +107,20 @@ export default function DestinationsPage() {
       BEACH: 'bg-cyan-100 text-cyan-800',
       WILDLIFE: 'bg-brown-100 text-brown-800'
     }
-    return colors[category?.name] || 'bg-gray-100 text-gray-800'
+    return colors[category?.name || ''] || 'bg-gray-100 text-gray-800'
   }
 
   const getPriceColor = (price: number) => {
-    if (price <= 50) return 'bg-green-100 text-green-800'
-    if (price <= 150) return 'bg-yellow-100 text-yellow-800'
-    if (price <= 300) return 'bg-purple-100 text-purple-800'
+    if (price <= 250) return 'bg-green-100 text-green-800'
+    if (price <= 750) return 'bg-yellow-100 text-yellow-800'
+    if (price <= 1500) return 'bg-purple-100 text-purple-800'
     return 'bg-red-100 text-red-800'
   }
 
   const getPriceRange = (price: number) => {
-    if (price <= 50) return 'BUDGET'
-    if (price <= 150) return 'MODERATE'
-    if (price <= 300) return 'LUXURY'
+    if (price <= 250) return 'BUDGET'
+    if (price <= 750) return 'MODERATE'
+    if (price <= 1500) return 'LUXURY'
     return 'PREMIUM'
   }
 
@@ -245,7 +245,7 @@ export default function DestinationsPage() {
               <div className="space-y-2 mb-4">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">Price:</span>
-                  <span className="font-medium text-green-600">₦{destination.price?.toLocaleString() || '0'}</span>
+                  <span className="font-medium text-green-600">₵{destination.price?.toLocaleString() || '0'}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600">Duration:</span>

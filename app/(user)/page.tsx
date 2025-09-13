@@ -118,16 +118,16 @@ export default function HomePage() {
     if (filters.priceRange !== 'all') {
       switch (filters.priceRange) {
         case 'budget':
-          filteredAttr = filteredAttr.filter(attraction => attraction.price <= 50)
-          filteredHot = filteredHot.filter(hotel => hotel.pricePerNight <= 50)
+          filteredAttr = filteredAttr.filter(attraction => attraction.price <= 250)
+          filteredHot = filteredHot.filter(hotel => hotel.pricePerNight <= 250)
           break
         case 'moderate':
-          filteredAttr = filteredAttr.filter(attraction => attraction.price > 50 && attraction.price <= 150)
-          filteredHot = filteredHot.filter(hotel => hotel.pricePerNight > 50 && hotel.pricePerNight <= 150)
+          filteredAttr = filteredAttr.filter(attraction => attraction.price > 250 && attraction.price <= 750)
+          filteredHot = filteredHot.filter(hotel => hotel.pricePerNight > 250 && hotel.pricePerNight <= 750)
           break
         case 'luxury':
-          filteredAttr = filteredAttr.filter(attraction => attraction.price > 150)
-          filteredHot = filteredHot.filter(hotel => hotel.pricePerNight > 150)
+          filteredAttr = filteredAttr.filter(attraction => attraction.price > 750)
+          filteredHot = filteredHot.filter(hotel => hotel.pricePerNight > 750)
           break
       }
     }
@@ -270,7 +270,7 @@ export default function HomePage() {
                               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                               <span className="text-sm font-medium">{attraction.rating}</span>
                             </div>
-                            <span className="text-lg font-bold text-foreground">${attraction.price}</span>
+                            <span className="text-lg font-bold text-foreground">₵{attraction.price}</span>
                           </div>
                           <div className="text-sm text-muted-foreground">
                             <p>Duration: {attraction.duration}</p>
@@ -326,7 +326,7 @@ export default function HomePage() {
                               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                               <span className="text-sm font-medium">{hotel.rating}</span>
                             </div>
-                            <span className="text-lg font-bold text-foreground">${hotel.pricePerNight}/night</span>
+                            <span className="text-lg font-bold text-foreground">₵{hotel.pricePerNight}/night</span>
                           </div>
                           <div className="text-sm text-muted-foreground">
                             <p>Available rooms: {hotel.availableRooms}</p>
@@ -403,7 +403,7 @@ export default function HomePage() {
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="text-sm font-medium">{attraction.rating}</span>
                         </div>
-                        <span className="text-lg font-bold text-foreground">${attraction.price}</span>
+                        <span className="text-lg font-bold text-foreground">₵{attraction.price}</span>
                       </div>
                       <div className="text-sm text-muted-foreground">
                         <p>Duration: {attraction.duration}</p>
@@ -483,7 +483,7 @@ export default function HomePage() {
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="text-sm font-medium">{hotel.rating}</span>
                         </div>
-                        <span className="text-lg font-bold text-foreground">${hotel.pricePerNight}/night</span>
+                        <span className="text-lg font-bold text-foreground">₵{hotel.pricePerNight}/night</span>
                       </div>
                       <div className="text-sm text-muted-foreground">
                         <p>Available rooms: {hotel.availableRooms}</p>
@@ -563,7 +563,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">From $850 per person</span>
+                  <span className="text-sm text-muted-foreground">From ₵4,250 per person</span>
                   <Button size="sm">View Details</Button>
                 </div>
               </CardContent>
@@ -595,7 +595,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">From $650 per person</span>
+                  <span className="text-sm text-muted-foreground">From ₵3,250 per person</span>
                   <Button size="sm">View Details</Button>
                 </div>
               </CardContent>

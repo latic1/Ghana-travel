@@ -26,11 +26,6 @@ export default function PaymentVerificationPage() {
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    if (!session) {
-      router.push('/auth/signin')
-      return
-    }
-
     const reference = searchParams.get('reference')
     const trxref = searchParams.get('trxref')
 
@@ -43,9 +38,21 @@ export default function PaymentVerificationPage() {
     // Use trxref if available (Paystack callback), otherwise use reference
     const paymentRef = trxref || reference
 
-    // Verify payment
-    verifyPayment(paymentRef)
-  }, [searchParams, session, router])
+    // Verify payment immediately, even without session
+    // The API will handle authentication
+    if (paymentRef) {
+      verifyPayment(paymentRef)
+    }
+  }, [searchParams])
+
+  // Check session after payment verification
+  useEffect(() => {
+    if (verificationStatus === 'success' && !session) {
+      // If payment was successful but no session, redirect to sign in
+      // This handles cases where session was lost during redirect
+      router.push('/auth/signin?callbackUrl=/bookings')
+    }
+  }, [verificationStatus, session, router])
 
   const verifyPayment = async (reference: string) => {
     try {
@@ -64,6 +71,18 @@ export default function PaymentVerificationPage() {
         toast.success('Payment verified successfully! Your booking has been confirmed.')
       } else {
         const error = await response.json()
+        
+        // Handle session expiration case
+        if (error.requiresAuth) {
+          setError('Your session has expired. Please sign in to complete your booking.')
+          setVerificationStatus('failed')
+          // Redirect to sign in with callback URL
+          setTimeout(() => {
+            router.push('/auth/signin?callbackUrl=/bookings')
+          }, 2000)
+          return
+        }
+        
         setError(error.error || 'Payment verification failed')
         setVerificationStatus('failed')
         toast.error(`Payment verification failed: ${error.error}`)
@@ -156,15 +175,15 @@ export default function PaymentVerificationPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Amount:</span>
-                  <span className="font-medium">₦{verificationData?.payment?.amount}</span>
+                  <span className="font-medium">₵{verificationData?.amount}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Reference:</span>
-                  <span className="font-medium font-mono">{verificationData?.payment?.transactionReference}</span>
+                  <span className="font-medium font-mono">{verificationData?.reference}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Payment Method:</span>
-                  <span className="font-medium">{verificationData?.payment?.paymentMethod}</span>
+                  <span className="font-medium">Card</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Status:</span>
@@ -174,25 +193,23 @@ export default function PaymentVerificationPage() {
             </div>
 
             {/* Booking Details */}
-            {verificationData?.booking && (
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-blue-800 mb-2">Booking Details</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Booking ID:</span>
-                    <span className="font-medium font-mono">{verificationData.booking.id}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Type:</span>
-                    <span className="font-medium capitalize">{verificationData.booking.type.toLowerCase()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Status:</span>
-                    <span className="font-medium text-green-600">Confirmed</span>
-                  </div>
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-blue-800 mb-2">Booking Details</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Status:</span>
+                  <span className="font-medium text-green-600">Confirmed</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Customer:</span>
+                  <span className="font-medium">{verificationData?.customer?.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Email:</span>
+                  <span className="font-medium">{verificationData?.customer?.email}</span>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* Next Steps */}
             <div className="bg-yellow-50 p-4 rounded-lg">

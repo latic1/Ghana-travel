@@ -49,6 +49,7 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
     
+    
     const attraction = await prisma.attraction.update({
       where: { id },
       data: {
@@ -67,7 +68,7 @@ export async function PUT(
 
     return NextResponse.json(attraction)
   } catch (error) {
-    console.error('Error updating attraction:', error)
+    console.error('❌ Error updating attraction:', error)
     return NextResponse.json(
       { error: 'Failed to update attraction' },
       { status: 500 }

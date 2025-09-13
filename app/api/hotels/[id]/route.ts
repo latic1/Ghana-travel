@@ -48,6 +48,7 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
     
+    
     const hotel = await prisma.hotel.update({
       where: { id },
       data: {
@@ -55,7 +56,7 @@ export async function PUT(
         description: body.description,
         location: body.location,
         category: body.category,
-        imageUrl: body.imageUrl,
+        images: body.images,
         rating: body.rating,
         pricePerNight: body.pricePerNight,
         amenities: body.amenities,
@@ -65,7 +66,7 @@ export async function PUT(
 
     return NextResponse.json(hotel)
   } catch (error) {
-    console.error('Error updating hotel:', error)
+    console.error('❌ Error updating hotel:', error)
     return NextResponse.json(
       { error: 'Failed to update hotel' },
       { status: 500 }

@@ -26,6 +26,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     
+    
     const hotel = await prisma.hotel.create({
       data: {
         name: body.name,
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(hotel, { status: 201 })
   } catch (error) {
-    console.error('Error creating hotel:', error)
+    console.error('❌ Error creating hotel:', error)
     return NextResponse.json(
       { error: 'Failed to create hotel' },
       { status: 500 }

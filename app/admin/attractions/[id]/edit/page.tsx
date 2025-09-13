@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import ImageUpload from '@/components/ImageUpload'
 import { ArrowLeft, Save, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -18,7 +19,7 @@ interface Attraction {
   description: string
   location: string
   category: string
-  imageUrl: string
+  images: string
   rating: number
   priceRange: string
   bestTimeToVisit?: string
@@ -37,7 +38,7 @@ export default function EditAttractionPage() {
     description: '',
     location: '',
     category: '',
-    imageUrl: '',
+    images: '',
     rating: 0,
     priceRange: '',
     bestTimeToVisit: '',
@@ -56,7 +57,7 @@ export default function EditAttractionPage() {
             description: data.description,
             location: data.location,
             category: data.category,
-            imageUrl: data.imageUrl,
+            images: data.images,
             rating: data.rating,
             priceRange: data.priceRange,
             bestTimeToVisit: data.bestTimeToVisit || '',
@@ -235,16 +236,15 @@ export default function EditAttractionPage() {
                 />
               </div>
 
-              {/* Image URL */}
-              <div className="space-y-2">
-                <Label htmlFor="imageUrl">Image URL</Label>
-                <Input
-                  id="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-                  placeholder="e.g., /images/attraction.jpg"
-                />
-              </div>
+              {/* Image Upload */}
+              <ImageUpload
+                value={formData.images}
+                onChange={(value) => handleInputChange('images', value as string)}
+                multiple={false}
+                folder="attractions"
+                label="Attraction Image"
+                description="Upload a main image for this attraction"
+              />
             </div>
 
             {/* Description */}

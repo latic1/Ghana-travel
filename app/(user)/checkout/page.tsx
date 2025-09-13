@@ -37,7 +37,7 @@ interface BookingData {
 export default function CheckoutPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [isProcessing, setIsProcessing] = useState(false)
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
   const [paymentData, setPaymentData] = useState({
@@ -45,14 +45,15 @@ export default function CheckoutPage() {
     email: '',
     phone: ''
   })
+  const [formErrors, setFormErrors] = useState({
+    cardholderName: '',
+    email: '',
+    phone: ''
+  })
+
 
   useEffect(() => {
-    if (!session) {
-      router.push('/auth/signin')
-      return
-    }
-
-    // Get booking data from URL params
+    // Get booking data from URL params first
     const type = searchParams.get('type') as 'HOTEL' | 'ATTRACTION'
     const hotelId = searchParams.get('hotelId')
     const attractionId = searchParams.get('attractionId')
@@ -82,12 +83,72 @@ export default function CheckoutPage() {
       numberOfPeople: numberOfPeople ? parseInt(numberOfPeople) : undefined,
       totalPrice: parseFloat(totalPrice)
     })
-  }, [searchParams, session, router])
+  }, [searchParams, router])
+
+  // Handle authentication status
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      const callbackUrl = '/checkout?' + searchParams.toString()
+      router.push('/auth/signin?callbackUrl=' + encodeURIComponent(callbackUrl))
+    }
+  }, [status, router, searchParams])
+
+  const validateForm = () => {
+    const errors = {
+      cardholderName: '',
+      email: '',
+      phone: ''
+    }
+
+    if (!paymentData.cardholderName.trim()) {
+      errors.cardholderName = 'Full name is required'
+    } else if (paymentData.cardholderName.trim().length < 2) {
+      errors.cardholderName = 'Full name must be at least 2 characters'
+    }
+
+    if (!paymentData.email.trim()) {
+      errors.email = 'Email address is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(paymentData.email)) {
+      errors.email = 'Please enter a valid email address'
+    }
+
+    if (!paymentData.phone.trim()) {
+      errors.phone = 'Phone number is required'
+    } else if (paymentData.phone.trim().length < 10) {
+      errors.phone = 'Phone number must be at least 10 digits'
+    }
+
+    setFormErrors(errors)
+    return !Object.values(errors).some(error => error !== '')
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setPaymentData(prev => ({ ...prev, [field]: value }))
+    // Clear error when user starts typing
+    if (formErrors[field as keyof typeof formErrors]) {
+      setFormErrors(prev => ({ ...prev, [field]: '' }))
+    }
+  }
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!bookingData) return
+    if (!bookingData) {
+      toast.error('Booking data is missing')
+      return
+    }
+
+    if (!session) {
+      toast.error('Please sign in to continue with payment')
+      router.push('/auth/signin?callbackUrl=' + encodeURIComponent(window.location.href))
+      return
+    }
+
+    // Validate form data
+    if (!validateForm()) {
+      toast.error('Please fix the form errors before proceeding')
+      return
+    }
 
     setIsProcessing(true)
 
@@ -122,31 +183,57 @@ export default function CheckoutPage() {
         if (result.data.authorization_url) {
           window.location.href = result.data.authorization_url
         } else {
-          toast.error('Payment initialization failed')
+          toast.error('Payment initialization failed - no authorization URL received')
         }
       } else {
         const error = await response.json()
+        
+        if (error.error === 'Unauthorized') {
+          toast.error('Your session has expired. Please sign in again.')
+          router.push('/auth/signin?callbackUrl=' + encodeURIComponent(window.location.href))
+        } else {
         toast.error(`Payment failed: ${error.error}`)
+        }
       }
     } catch (error) {
-      console.error('Error processing payment:', error)
+      console.error('❌ Error processing payment:', error)
       toast.error('Payment processing failed. Please try again.')
     } finally {
       setIsProcessing(false)
     }
   }
 
-  if (!session || !bookingData) {
+  // Show loading state while checking authentication
+  if (status === 'loading') {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading checkout...</p>
+            <p className="text-gray-600">Verifying authentication...</p>
           </div>
         </div>
       </div>
     )
+  }
+
+  // Show loading state while loading booking data
+  if (!bookingData) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading booking details...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (status === 'unauthenticated') {
+    return null
   }
 
   return (
@@ -187,11 +274,15 @@ export default function CheckoutPage() {
                     <Input
                       id="cardholderName"
                       value={paymentData.cardholderName}
-                      onChange={(e) => setPaymentData({ ...paymentData, cardholderName: e.target.value })}
+                      onChange={(e) => handleInputChange('cardholderName', e.target.value)}
                       placeholder="John Doe"
                       required
                       disabled={isProcessing}
+                      className={formErrors.cardholderName ? 'border-red-500' : ''}
                     />
+                    {formErrors.cardholderName && (
+                      <p className="text-sm text-red-500">{formErrors.cardholderName}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
@@ -199,11 +290,15 @@ export default function CheckoutPage() {
                       id="email"
                       type="email"
                       value={paymentData.email}
-                      onChange={(e) => setPaymentData({ ...paymentData, email: e.target.value })}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
                       placeholder="your@email.com"
                       required
                       disabled={isProcessing}
+                      className={formErrors.email ? 'border-red-500' : ''}
                     />
+                    {formErrors.email && (
+                      <p className="text-sm text-red-500">{formErrors.email}</p>
+                    )}
                   </div>
                 </div>
 
@@ -212,11 +307,15 @@ export default function CheckoutPage() {
                   <Input
                     id="phone"
                     value={paymentData.phone}
-                    onChange={(e) => setPaymentData({ ...paymentData, phone: e.target.value })}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
                     placeholder="+233 XX XXX XXXX"
                     required
                     disabled={isProcessing}
+                    className={formErrors.phone ? 'border-red-500' : ''}
                   />
+                  {formErrors.phone && (
+                    <p className="text-sm text-red-500">{formErrors.phone}</p>
+                  )}
                 </div>
 
                 <Button 
@@ -232,7 +331,7 @@ export default function CheckoutPage() {
                   ) : (
                     <>
                       <Lock className="w-4 h-4 mr-2" />
-                      Pay ${bookingData.totalPrice}
+                      Pay ₵{bookingData.totalPrice}
                     </>
                   )}
                 </Button>
@@ -297,7 +396,7 @@ export default function CheckoutPage() {
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between text-lg font-semibold">
                   <span>Total Amount</span>
-                  <span className="text-2xl text-green-600">${bookingData.totalPrice}</span>
+                  <span className="text-2xl text-green-600">₵{bookingData.totalPrice}</span>
                 </div>
               </div>
 

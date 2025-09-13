@@ -11,21 +11,27 @@ import Link from 'next/link'
 
 interface UserBooking {
   id: string
-  checkIn: string
-  checkOut: string
-  guests: number
+  type: 'HOTEL' | 'ATTRACTION'
+  checkIn?: string
+  checkOut?: string
+  visitDate?: string
+  guests?: number
+  rooms?: number
+  numberOfPeople?: number
   totalPrice: number
   status: string
   createdAt: string
-  hotel: {
+  hotel?: {
     id: string
     name: string
     location: string
     images: string
-    destination: {
-      id: string
-      name: string
-    }
+  }
+  attraction?: {
+    id: string
+    name: string
+    location: string
+    images: string
   }
 }
 
@@ -183,75 +189,116 @@ export default function UserBookingsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {/* Hotel Info */}
+                    {/* Hotel or Attraction Info */}
                     <div className="flex items-start gap-4">
                       <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                         <img
-                          src={booking.hotel.images || "/placeholder-s2dgm.png"}
-                          alt={booking.hotel.name}
+                          src={
+                            booking.type === 'HOTEL' 
+                              ? (booking.hotel?.images || "/placeholder-s2dgm.png")
+                              : (booking.attraction?.images || "/placeholder-s2dgm.png")
+                          }
+                          alt={booking.type === 'HOTEL' ? booking.hotel?.name : booking.attraction?.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{booking.hotel.name}</h3>
+                        <h3 className="font-semibold text-lg">
+                          {booking.type === 'HOTEL' ? booking.hotel?.name : booking.attraction?.name}
+                        </h3>
                         <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
                           <MapPin className="w-3 h-3" />
-                          {booking.hotel.location}
+                          {booking.type === 'HOTEL' ? booking.hotel?.location : booking.attraction?.location}
                         </div>
-                        {booking.hotel.destination && (
-                          <p className="text-sm text-gray-500">
-                            {booking.hotel.destination.name}
-                          </p>
-                        )}
+                        <div className="flex items-center gap-1 text-xs text-blue-600">
+                          {booking.type === 'HOTEL' ? (
+                            <Building2 className="w-3 h-3" />
+                          ) : (
+                            <MapPin className="w-3 h-3" />
+                          )}
+                          {booking.type === 'HOTEL' ? 'Hotel Booking' : 'Attraction Visit'}
+                        </div>
                       </div>
                     </div>
 
                     {/* Booking Details */}
                     <div className="grid grid-cols-2 gap-4 py-3 border-t border-gray-100">
                       <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar className="w-4 h-4 text-gray-500" />
-                          <span className="font-medium">Check-in:</span>
-                          <span>{formatDate(booking.checkIn)}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar className="w-4 h-4 text-gray-500" />
-                          <span className="font-medium">Check-out:</span>
-                          <span>{formatDate(booking.checkOut)}</span>
-                        </div>
+                        {booking.type === 'HOTEL' ? (
+                          <>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Calendar className="w-4 h-4 text-gray-500" />
+                              <span className="font-medium">Check-in:</span>
+                              <span>{booking.checkIn ? formatDate(booking.checkIn) : 'N/A'}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Calendar className="w-4 h-4 text-gray-500" />
+                              <span className="font-medium">Check-out:</span>
+                              <span>{booking.checkOut ? formatDate(booking.checkOut) : 'N/A'}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Calendar className="w-4 h-4 text-gray-500" />
+                            <span className="font-medium">Visit Date:</span>
+                            <span>{booking.visitDate ? formatDate(booking.visitDate) : 'N/A'}</span>
+                          </div>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm">
                           <User className="w-4 h-4 text-gray-500" />
-                          <span className="font-medium">Guests:</span>
-                          <span>{booking.guests}</span>
+                          <span className="font-medium">
+                            {booking.type === 'HOTEL' ? 'Guests:' : 'People:'}
+                          </span>
+                          <span>
+                            {booking.type === 'HOTEL' 
+                              ? (booking.guests || booking.rooms || 'N/A')
+                              : (booking.numberOfPeople || 'N/A')
+                            }
+                          </span>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
                           <DollarSign className="w-4 h-4 text-gray-500" />
                           <span className="font-medium">Total:</span>
-                          <span className="font-semibold">${booking.totalPrice}</span>
+                          <span className="font-semibold">₵{booking.totalPrice}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Additional Info */}
-                    <div className="pt-3 border-t border-gray-100">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">
-                          {calculateNights(booking.checkIn, booking.checkOut)} nights
-                        </span>
-                        <span className="text-gray-600">
-                          ${(booking.totalPrice / calculateNights(booking.checkIn, booking.checkOut)).toFixed(2)}/night
-                        </span>
+                    {booking.type === 'HOTEL' && booking.checkIn && booking.checkOut && (
+                      <div className="pt-3 border-t border-gray-100">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600">
+                            {calculateNights(booking.checkIn!, booking.checkOut!)} nights
+                          </span>
+                          <span className="text-gray-600">
+                            ₵{(booking.totalPrice / calculateNights(booking.checkIn!, booking.checkOut!)).toFixed(2)}/night
+                          </span>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Actions */}
                     <div className="flex gap-2 pt-3 border-t border-gray-100">
                       <Button variant="outline" size="sm" className="flex-1" asChild>
-                        <Link href={`/hotels/${booking.hotel.id}`}>
-                          <Building2 className="w-4 h-4 mr-2" />
-                          View Hotel
+                        <Link href={
+                          booking.type === 'HOTEL' 
+                            ? `/hotels/${booking.hotel?.id}`
+                            : `/attractions/${booking.attraction?.id}`
+                        }>
+                          {booking.type === 'HOTEL' ? (
+                            <>
+                              <Building2 className="w-4 h-4 mr-2" />
+                              View Hotel
+                            </>
+                          ) : (
+                            <>
+                              <MapPin className="w-4 h-4 mr-2" />
+                              View Attraction
+                            </>
+                          )}
                         </Link>
                       </Button>
                       {booking.status === 'PENDING' && (

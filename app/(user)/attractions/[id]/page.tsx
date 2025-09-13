@@ -173,7 +173,7 @@ export default function DestinationDetailPage() {
               {destination.category?.name || 'No category'}
             </Badge>
             <Badge className="bg-green-100 text-green-800">
-              ₦{destination.price?.toLocaleString() || '0'}
+              ₵{destination.price?.toLocaleString() || '0'}
             </Badge>
           </div>
         </div>
@@ -225,7 +225,7 @@ export default function DestinationDetailPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Price per Person:</span>
-                    <span className="font-medium text-green-600">₦{destination.price?.toLocaleString() || '0'}</span>
+                    <span className="font-medium text-green-600">₵{destination.price?.toLocaleString() || '0'}</span>
                   </div>
                 </div>
               </div>
@@ -254,7 +254,7 @@ export default function DestinationDetailPage() {
                             <Star className="w-4 h-4 text-yellow-500 fill-current" />
                             {hotel.rating}
                           </span>
-                          <span className="text-green-600 font-medium">${hotel.pricePerNight}/night</span>
+                          <span className="text-green-600 font-medium">₵{hotel.pricePerNight}/night</span>
                         </div>
                       </div>
                       <Button size="sm" variant="outline">
@@ -279,7 +279,7 @@ export default function DestinationDetailPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-bold text-green-600">
-                  ₦{destination.price?.toLocaleString() || '0'}
+                  ₵{destination.price?.toLocaleString() || '0'}
                 </span>
                 <span className="text-gray-600">per person</span>
               </div>
@@ -288,7 +288,7 @@ export default function DestinationDetailPage() {
                 <div className="flex items-center justify-between text-lg font-semibold border-t pt-3">
                   <span className="text-gray-700">Total Price:</span>
                   <span className="text-2xl font-bold text-green-600">
-                    ₦{totalPrice.toLocaleString()}
+                    ₵{totalPrice.toLocaleString()}
                   </span>
                 </div>
               )}

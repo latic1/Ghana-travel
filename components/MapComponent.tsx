@@ -22,7 +22,7 @@ interface MapComponentProps {
 }
 
 // Fix for default markers in Leaflet
-delete (L.Icon.Default.prototype as unknown)._getIconUrl
+delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -83,14 +83,14 @@ export default function MapComponent({ locations, onLocationSelect }: MapCompone
         .addTo(map)
         .bindPopup(`
           <div class="p-2">
-            <h3 class="font-bold text-lg mb-1">${location.name}</h3>
-            <p class="text-sm text-gray-600 mb-2">${location.description}</p>
+            <h3 class="font-bold text-lg mb-1">₵{location.name}</h3>
+            <p class="text-sm text-gray-600 mb-2">₵{location.description}</p>
             <div class="flex items-center gap-2 mb-2">
               <span class="text-yellow-500">★</span>
-              <span class="text-sm">${location.rating}</span>
-              ${location.price ? `<span class="text-green-600 font-medium">${location.price}</span>` : ''}
+              <span class="text-sm">₵{location.rating}</span>
+              ₵{location.price ? `<span className="text-green-600 font-medium">₵{location.price}</span>` : ''}
             </div>
-            <p class="text-xs text-gray-500">${location.location}</p>
+            <p class="text-xs text-gray-500">₵{location.location}</p>
           </div>
         `)
 
